@@ -19,9 +19,97 @@ import math
 import decimal
 import subprocess
 
+import ucal
 import PySimpleGUI as sg
 
-from ucal_units import units
+
+####################
+# START OF OPTIONS #
+####################
+
+# displayed history length
+displayed_history_length = 8
+
+# font for history input
+history_font = ('Consolas Italic', 10)
+
+# font for history results
+result_font = ('Consolas', 13)
+
+# font for current input
+input_font = ('Consolas', 16)
+
+# width of history lines in character points
+history_width = 60 * 10
+
+##################
+# END OF OPTIONS #
+##################
+
+
+def set_clipboard_text(text):
+    """Put the given text into the Windows clipboard."""
+    os.system('echo | set /p="' + text + '" | clip')
+
+
+def show_units_gui(unit_names):
+    """Show a window with all units defined."""
+    layout = []
+    # global units
+    layout.append([sg.Text('The following units and variables are defined.')])
+    layout.append([sg.Text(' ', font=('Consolas', 4))])
+    # unit_names = sorted(unit_def.keys())
+    # target line length in characters
+    max_line_length = 50
+    i = 0
+    while i < len(unit_names) - 1:
+        if i >= len(unit_names) - 1:
+            continue
+        if len(unit_names[i]) + 2 + len(unit_names[i + 1]) <= max_line_length:
+            unit_names[i] += ', ' + unit_names[i + 1]
+            del unit_names[i + 1]
+        else:
+            i += 1
+    unit_names = '\n'.join(unit_names)
+    # print(unit_names)
+    layout.append([sg.Text(unit_names)])
+    layout.append([sg.Text(' ', font=('Consolas', 4))])
+    layout.append([sg.OK(), sg.Text(' ', font=('Consolas', 4)), sg.Cancel()])
+    layout.append([sg.Text(' ', font=('Consolas', 4))])
+    window = sg.Window('Units defined', icon=get_icon_path())
+    window.Layout(layout)
+    window.Read(timeout=0)
+    window.TKroot.grab_set()
+    window.Read()
+    window.TKroot.grab_release()
+    window.Close()
+
+
+def set_gui_colors(sg):
+    """Set the color scheme."""
+    # this scheme is similar to Windows default colors
+    sg.SetOptions(background_color='#F0F0F0',
+                  text_element_background_color='#F0F0F0',
+                  element_background_color='#F0F0F0',
+                  text_color='#000000',
+                  input_elements_background_color='#FFFFFF',
+                  button_color=('#000000', '#E1E1E1'))
+
+
+def get_icon_path():
+    """Return the path to the icon file or None if not found."""
+    icon_filename = r'ucal.ico'
+    icon_path = os.path.join(os.path.abspath('.'), icon_filename)
+    if os.path.isfile(icon_path):
+        print('Using icon at %s.' % (icon_path))
+    else:
+        icon_path = os.path.join(os.path.dirname(__file__), icon_filename)
+        if not os.path.isfile(icon_path):
+            print('Icon file "%s" not found.' % (icon_path))
+            icon_path = None
+        else:
+            print('Using icon at %s.' % (icon_path))
+    return icon_path
 
 
 def run():
@@ -43,11 +131,9 @@ def run():
     myappid = 'unit.calculator'
     ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
     # change look and feel
-    sg.ChangeLookAndFeel('SandyBeach')
-    set_colors(sg)
+    set_gui_colors(sg)
     sg.SetOptions(element_padding=(0, 0))
-    # sg.SetOptions(font=('Helvetica', 12))
-    sg.SetOptions(font=get_default_windows_font())
+    sg.SetOptions(font=('Segoe UI', 9))
     # window top of layout
     layout = []
     layout.append([sg.Text('Unit Calculator performs calculations taking into '
@@ -87,20 +173,9 @@ def run():
                    sg.Text(' ' * 71),
                    sg.ReadButton('Exit')])
     layout.append([sg.Text(' ', font=('Consolas', 4))])
-    icon_filename = r'ucal.ico'
-    icon_path = os.path.join(base_path, icon_filename)
-    if os.path.isfile(icon_path):
-        print('Using icon at %s.' % (icon_path))
-    else:
-        icon_path = os.path.join(os.path.dirname(__file__), icon_filename)
-        if not os.path.isfile(icon_path):
-            print('Icon file "%s" not found.' % (icon_path))
-            icon_path = None
-        else:
-            print('Using icon at %s.' % (icon_path))
     window = sg.Window('Unit Calculator',
                        return_keyboard_events=True,
-                       icon=icon_path)
+                       icon=get_icon_path())
     # pady=0, relief='flat'
     # buttons['calculate'].TKroot
     window.Layout(layout)
@@ -125,7 +200,7 @@ def run():
         #    print(button, [ord(c) for c in button])
         # if we enter an infix operator, insert the previous answer first
         if button and input_element.Get() == button and input_history:
-            if button in infix_operators:
+            if button in ucal.infix_operators:
                 input_element.Update('(%s)%s' % (answer_history[-1], button))
                 input_element.TKEntry.icursor('end')
         # process keyboard shortcuts into button names
@@ -192,8 +267,8 @@ def run():
             this_answer = None
             # error = False
             try:
-                this_answer = process_user_equation(this_input)
-            except (ParserError, QuantityError) as e:
+                this_answer = ucal.process_user_equation(this_input)
+            except (ucal.ParserError, ucal.QuantityError) as e:
                 # error = True
                 this_answer = e.args[0]
             except (decimal.DecimalException) as e:
