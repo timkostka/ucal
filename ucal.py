@@ -1,16 +1,19 @@
 """
-This file performs arithmetic functions taking into account units.
+The ucal module evaluates expressions with automatic unit conversions.
 
-python ucal.py "1in + .2m in feet"
+Typically, this module is used from ucal_gui.py to perform calculations,
+however it can also be used as a standalone module.
 
-This file performs calculations taking into account units.
-
-Examples:
-  "5km in mi" --> "3.10686 mi"
-  "sqrt(2 * g * 30ft) in fps" --> "43.9367 fps"
-  "5V * 500mA" --> "2.5 W"
-
-For more commands, type "help".
+Usage:
+>>> import ucal
+>>> ucal.evaluate("5km in mi")
+'3.10686 mi'
+>>> ucal.evaluate("sqrt(2 * g * 30ft) in fps")
+'43.9367 fps'
+>>> ucal.evaluate("5V * 500mA")
+'2.5 W'
+>>> ucal.evaluate("1mi + 10km")
+'11609.344 m'
 
 """
 

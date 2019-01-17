@@ -2,7 +2,7 @@
 Unit definitions for use by ucal.py.
 
 Usage:
-from ucal_units import units
+>>> from ucal_units import units
 
 """
 
