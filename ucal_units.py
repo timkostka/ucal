@@ -17,7 +17,6 @@ units['km'] = '1e3 m'
 units['cm'] = '1e-2 m'
 units['um'] = '1e-6 m'
 units['nm'] = '1e-9 m'
-
 units['ft'] = '0.3048 m'
 units['feet'] = 'ft'
 units['in'] = '1 / 12 ft'
@@ -30,75 +29,101 @@ units['mi'] = '5280 ft'
 units['mile'] = 'mi'
 units['miles'] = 'mi'
 
+# area
 units['acre'] = '1 / 640 * mi^2'
 
-units['cc'] = 'cm^3'
-
+# speed
 units['mph'] = 'mile/hour'
 units['mps'] = 'm/s'
 units['fps'] = 'ft/sec'
 units['kph'] = 'km/hr'
 units['knot'] = '1.852 mph'
 
+# volume
+units['cc'] = 'cm^3'
 units['floz'] = '1 / 20 pint'
 units['pint'] = '2 cup'
 units['cup'] = '1 / 16 gallon'
 units['quart'] = '2 pint'
 units['gallon'] = 'gal'
 units['gal'] = '231 in^3'
+units['L'] = '1e-3 m^3'
+units['mL'] = '1e-3 L'
 
+# mass
+units['lb'] = '0.45359237 kg'
+units['lbs'] = 'lb'
+units['lbm'] = 'lb'
+units['gm'] = '0.001 kg'
 units['oz'] = '1/16 lb'
 units['ton'] = '2000 lb'
 
+# force
 units['N'] = '1 kg * m / s^2'
 units['kN'] = '1e3 N'
+units['lbf'] = 'lb * g'
 
+# energy
 units['J'] = '1 N * m'
 units['mJ'] = '1e-3 J'
 units['kJ'] = '1e3 J'
 units['MJ'] = '1e6 J'
 units['GJ'] = '1e9 J'
-
 units['Btu'] = '1055.06 J'
 units['btu'] = 'Btu'
 units['BTU'] = 'Btu'
 
+# power
 units['W'] = '1 J / s'
 units['mW'] = '1e-3 W'
 units['kW'] = '1e3 W'
 units['MW'] = '1e6 W'
 units['GW'] = '1e9 W'
-
 # metric horsepower
 units['hp'] = '75 kg * g * 1m / (1s)'
 
+# pressure
 units['Pa'] = 'N / m^2'
 units['kPa'] = '1e3 Pa'
 units['MPa'] = '1e6 Pa'
 units['GPa'] = '1e9 Pa'
+units['psi'] = 'lbf / in^2'
+units['ksi'] = '1e3 psi'
+units['atm'] = '101325 Pa'
+units['cmHg'] = '10 mmHg'
+units['mmHg'] = '133.322387415 Pa'
+units['Torr'] = '1 / 760 atm'
+units['bar'] = '100 kPa'
+units['mbar'] = '0.001 bar'
 
+# charge
 units['C'] = 'A * s'
 
+# electrical storage
 units['F'] = 'C / V'
 units['mF'] = '1e-3 F'
 units['uF'] = '1e-6 F'
 units['nF'] = '1e-9 F'
 units['pF'] = '1e-12 F'
 
+# electrical resistance
 units['Ohm'] = 'V / A'
 units['kOhm'] = '1e3 Ohm'
 units['MOhm'] = '1e6 Ohm'
 
+# electrical inductance
 units['H'] = 'Ohm * s'
 units['mH'] = '1e-3 H'
 units['uH'] = '1e-6 H'
 units['nH'] = '1e-9 H'
 
+# current
 units['mA'] = '1e-3 A'
 units['uA'] = '1e-6 A'
 units['nA'] = '1e-9 A'
 units['pA'] = '1e-12 A'
 
+# voltage
 units['V'] = 'W / A'
 units['kV'] = '1e3 V'
 units['MV'] = '1e6 V'
@@ -107,36 +132,14 @@ units['uV'] = '1e-6 V'
 units['nV'] = '1e-9 V'
 units['pV'] = '1e-12 V'
 
-# mass
-units['lb'] = '0.45359237 kg'
-units['lbs'] = 'lb'
-units['lbm'] = 'lb'
-units['gm'] = '0.001 kg'
-
-units['lbf'] = 'lb * g'
-
-units['psi'] = 'lbf / in^2'
-units['ksi'] = '1e3 psi'
-
+# density
 units['pcf'] = 'lb / ft^3'
 
-units['oz'] = '1/16 lb'
-
+# frequency
 units['Hz'] = '1 / s'
 units['kHz'] = '1e3 Hz'
 units['MHz'] = '1e6 Hz'
 units['GHz'] = '1e9 Hz'
-
-units['atm'] = '101325 Pa'
-units['cmHg'] = '10 mmHg'
-units['mmHg'] = '133.322387415 Pa'
-units['Torr'] = '1 / 760 atm'
-units['bar'] = '100 kPa'
-units['mbar'] = '0.001 bar'
-
-# volume
-units['L'] = '1e-3 m^3'
-units['mL'] = '1e-3 L'
 
 # time
 units['sec'] = 's'

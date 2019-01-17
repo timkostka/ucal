@@ -1,5 +1,5 @@
 """
-GUI implementation of ucal.py.
+GUI implementation of the functionality in ucal.py.
 
 Usage:
 >>> import ucal_gui
