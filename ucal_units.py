@@ -108,6 +108,8 @@ units['pF'] = '1e-12 F'
 
 # electrical resistance
 units['Ohm'] = 'V / A'
+units['uOhm'] = '1e-6 Ohm'
+units['mOhm'] = '1e-3 Ohm'
 units['kOhm'] = '1e3 Ohm'
 units['MOhm'] = '1e6 Ohm'
 

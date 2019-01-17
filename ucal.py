@@ -635,7 +635,7 @@ unit_measure['m^2'] = 'area'
 unit_measure['m^3'] = 'volume'
 unit_measure['m/s'] = 'velocity'
 unit_measure['m/s^2'] = 'acceleration'
-unit_measure['kg/m^3'] = 'mass density'
+unit_measure['kg/m^3'] = 'density'
 unit_measure['Pa'] = 'stress'
 unit_measure['V'] = 'electric potential'
 unit_measure['F'] = 'capacitance'
@@ -643,6 +643,7 @@ unit_measure['Ohm'] = 'electric resistance'
 unit_measure['H'] = 'inductance'
 unit_measure['Mbps'] = 'data rate'
 unit_measure['byte'] = 'data'
+unit_measure['Hz'] = 'frequency'
 
 # get a set of all units
 all_units = set()
