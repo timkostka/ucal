@@ -32,60 +32,10 @@ import PySimpleGUI as sg
 
 from ucal_units import units
 
-"""
-def get_clipboard_text():
-    CF_TEXT = 1
-    text = ''
-    if ctypes.windll.user32.OpenClipboard(ctypes.c_int(0)):
-        h_clip_mem = ctypes.windll.user32.GetClipboardData(CF_TEXT)
-        ctypes.windll.kernel32.GlobalLock.restype = ctypes.c_char_p
-        #text = ctypes.wstring_at(ctypes.windll.kernel32.GlobalLock(h_clip_mem))
-        text = ctypes.windll.kernel32.GlobalLock(ctypes.c_int(h_clip_mem))
-        #ctypes.windll.kernel32.GlobalUnlock(h_clip_mem)
-        ctypes.windll.kernel32.GlobalUnlock(ctypes.c_int(h_clip_mem))
-        ctypes.windll.user32.CloseClipboard()
-        text = text.decode('utf-8')
-    return text
-"""
+####################
+# START OF OPTIONS #
+####################
 
-
-def set_clipboard_text(text):
-    os.system('echo | set /p="' + text + '" | clip')
-    return
-    subprocess.Popen(['clip'],
-                     stdin=subprocess.PIPE,
-                     encoding='utf8').communicate(text)
-    return
-    CF_UNICODETEXT = 13
-    GMEM_DDESHARE = 0x2000
-    if not isinstance(text, str):
-        text = text.decode('mbcs')
-    ctypes.windll.user32.OpenClipboard(None)
-    ctypes.windll.user32.EmptyClipboard()
-    hCd = ctypes.windll.kernel32.GlobalAlloc(GMEM_DDESHARE,
-                                             2 * (len(text) + 1))
-    pchData = ctypes.windll.kernel32.GlobalLock(hCd)
-    text = ctypes.c_wchar_p(text)
-    print(type(text))
-    print(type(pchData))
-    print(pchData)
-    print([c for c in pchData])
-    # print(type(ctypes.c_wchar_p(pchData)))
-    # ctypes.cdll.msvcrt.wcscpy(pchData, text)
-    ctypes.c_wchar_p(pchData)
-    ctypes.cdll.msvcrt.wcscpy(ctypes.c_wchar_p(pchData), text)
-    ctypes.windll.kernel32.GlobalUnlock(hCd)
-    ctypes.windll.user32.SetClipboardData(CF_UNICODETEXT, hCd)
-    # ctypes.windll.user32.SetClipboardText(CF_UNICODETEXT, hCd)
-    ctypes.windll.user32.CloseClipboard()
-
-
-if False:
-    print(get_clipboard_text())
-    set_clipboard_text('hello world!')
-    print(get_clipboard_text())
-    set_clipboard_text('goodbye world!')
-    print(get_clipboard_text())
 
 # working precision in base-10 decimal units
 working_precision_digits = 32
@@ -124,6 +74,12 @@ history_width = 60 * 10
 # END OF OPTIONS #
 ##################
 
+
+def set_clipboard_text(text):
+    """Put the given text into the Windows clipboard."""
+    os.system('echo | set /p="' + text + '" | clip')
+
+
 print('Unit calculator starting...')
 print('We are at %s.' % (os.getcwd()))
 
@@ -135,13 +91,6 @@ except Exception:
 print('Local files are at %s.' % (base_path))
 
 print('Windows release is %s.' % (platform.release()))
-
-# def set_clipboard(text):
-#    """Set the clipboard to the given text."""
-#    subprocess.Popen(['clip'],
-#                     stdin=subprocess.PIPE,
-#                     encoding='utf8').communicate(text)
-#    #os.system('echo | set /p="' + text + '" | clip')
 
 
 def show_units_gui():
@@ -629,7 +578,7 @@ implicit_multiplication_rules[Token.closing_parenthesis] = (
     [Token.variable, Token.opening_parenthesis])
 
 
-# syntax rules for what can follow
+# syntax rules for what token can follow another token
 token_can_follow = dict()
 token_can_follow[Token.opening_parenthesis] = {Token.function,
                                                Token.variable,
@@ -665,11 +614,6 @@ token_can_end = {Token.closing_parenthesis,
                  Token.variable,
                  Token.value,
                  Token.postfix_operator}
-
-# define temperature unit conversion
-# temperature_units = dict()
-# temperature_units['degC'] = ['(K * 1 - 273.15)']
-# temperature_units['degF'] = ['((K * 1 - 273.15 + 40) * 9 / 5 - 40)']
 
 # default unit systems
 unit_systems = dict()
