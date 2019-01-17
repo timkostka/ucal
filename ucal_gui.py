@@ -8,19 +8,14 @@ Usage:
 """
 
 
-import time
 import os
 import ctypes
-import sys
 import platform
-import inspect
-import textwrap
-import math
 import decimal
-import subprocess
+
+import PySimpleGUI as sg
 
 import ucal
-import PySimpleGUI as sg
 
 
 ####################

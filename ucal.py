@@ -18,7 +18,6 @@ Usage:
 """
 
 import os
-import ctypes
 import sys
 import platform
 import inspect
