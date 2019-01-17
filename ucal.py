@@ -27,6 +27,17 @@ import decimal
 
 from ucal_units import units
 
+# An expression is evaluated in the following manner
+# - First, the equation is tokenized
+#   - Starting from left to right,
+#     - values start with +-.0123456789
+#     - variables and function start with a letter
+#     - prefix operators can be +-
+#     - postfix operators are !
+#     - infix operators are +-/*%^
+#     - open parenthesis is (
+#     - close parenthesis is )
+
 ####################
 # START OF OPTIONS #
 ####################
@@ -476,7 +487,7 @@ def parse_value_at_start(text):
     if not found_digit:
         return None
     # try to parse an exponent
-    if text[i] != 'e':
+    if text[i].lower() != 'e':
         return text[:i]
     start_index = i
     i += 1
@@ -886,10 +897,6 @@ while units:
         for x in sorted(units.keys()):
             print('* %s: %s' % (x, units[x]))
         raise ValueError
-if False:
-    print('Unit conversions:')
-    for key, value in sorted(unit_def.items()):
-        print('* %s --> %s' % (key, value))
 
 # form a dictionary of all unit types
 # we want: unit_measure[tuple(Quantity.units)] = 'length'
@@ -924,12 +931,6 @@ def get_measure(quantity):
     if check in unit_measure:
         return unit_measure[check][0]
     return None
-
-
-def formatted_tokens(tokens):
-    """Return the tokens formatted as a string with standard spacing."""
-    assert all(x[1] is str for x in tokens)
-    pass
 
 
 # output units, in order of precedence

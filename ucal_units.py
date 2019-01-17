@@ -9,8 +9,6 @@ Usage:
 # unit and constant definitions
 units = dict()
 
-#units['%'] = '1/100'
-
 # length
 units['mm'] = '1e-3 m'
 units['km'] = '1e3 m'
