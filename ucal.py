@@ -548,6 +548,14 @@ class Quantity:
         return Quantity(value=self.value ** other.value,
                         units=[x * float(other.value) for x in self.units])
 
+    def matches_units(self, other):
+        """Return True if this has the same units as the other value."""
+        return all(x == y for x, y in zip(self.units, other.units))
+
+    def is_unitless(self):
+        """Return True if the value is unitless."""
+        return all(x == 0.0 for x in self.units)
+
     def factorial(self):
         if self.units != [0.0] * unit_count:
             raise QuantityError('Inconsistent units', self)
@@ -611,6 +619,14 @@ class Token:
     infix_operator = 'infix_op'
     prefix_operator = 'prefix_op'
     postfix_operator = 'postfix_op'
+
+
+# rules for implicit multiplication
+implicit_multiplication_rules = dict()
+implicit_multiplication_rules[Token.value] = [Token.variable]
+implicit_multiplication_rules[Token.variable] = [Token.variable]
+implicit_multiplication_rules[Token.closing_parenthesis] = (
+    [Token.variable, Token.opening_parenthesis])
 
 
 # syntax rules for what can follow
@@ -827,21 +843,10 @@ def add_implicit_multiplication(tokens):
     """
     added_any = False
     i = 0
+    rules = implicit_multiplication_rules
     while i < len(tokens) - 1:
         add_it = False
-        # between value/variable and variable
-        if ((tokens[i][0] == Token.value or tokens[i][0] == Token.variable) and
-                tokens[i + 1][0] == Token.variable):
-            add_it = True
-        # between closing parenthesis and a variable
-        elif (tokens[i][0] == Token.closing_parenthesis and
-                tokens[i + 1][0] == Token.variable):
-            add_it = True
-        # between parenthesis
-        elif (tokens[i][0] == Token.opening_parenthesis and
-                tokens[i + 1][0] == Token.closing_parenthesis):
-            add_it = True
-        if add_it:
+        if tokens[i][0] in rules and tokens[i + 1][0] in rules[tokens[i][0]]:
             if debug_output and not added_any:
                 print('Adding implicit parentheses:')
             added_any = True
@@ -1338,6 +1343,30 @@ def process_user_equation(equation):
     return to_string(+result, target_units)
 
 
+def evaluate(equation, units=None):
+    """
+    Evaluate the equation and return the result in the given units.
+
+    Usage:
+    >>> evaluate('5km + 1mi')
+    (6609.344, 'm')
+    >>> evaluate('5km + 1mi', units='mi')
+    (4.10685596118667, 'mi')
+
+    """
+    # try to evaluate in the requested units
+    if units is not None:
+        unit_value = calculate(units)
+        value = calculate(equation)
+        # if units don't match, raise an error
+        if not value.matches_units(unit_value):
+            raise ParserError
+        result = Quantity(value=value.value / unit_value.value, units=None)
+        return to_string(result), units
+    # evaluate in any units
+    return to_string(+calculate(equation))
+
+
 def get_default_windows_font():
     """Return the default font used by Windows on forms."""
     return ('Segoe UI', 9)
@@ -1367,6 +1396,7 @@ invalid_expressions.append('1 * ()')
 invalid_expressions.append('1 2')
 invalid_expressions.append('m 2')
 invalid_expressions.append('1 m 1')
+
 
 # if this is run as a script, then do some basic calculations
 if __name__ == "__main__":
