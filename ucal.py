@@ -58,9 +58,6 @@ show_timings = False
 # if True, will show debug output
 debug_output = False
 
-# if True, unit tests will be run
-run_unit_tests = True
-
 # if True, will verify conversions were done correctly
 verify_unit_conversions = True
 
@@ -1085,63 +1082,5 @@ def evaluate(equation, units=None):
     return to_string(+calculate(equation))
 
 
-# evaluating these should give the desired result
-valid_expressions = []
-valid_expressions.append('1 ^ 1 + 1 - 1 * 1 / 1 % 1')
-valid_expressions.append('-(1)')
-valid_expressions.append('+(1)')
-valid_expressions.append('((1))')
-
-# evaluating these expressions should cause a QuantityError or a ParserError
-invalid_expressions = []
-
-# unbalanced parentheses
-invalid_expressions.append('(1 + 1')
-invalid_expressions.append('1 + 1)')
-invalid_expressions.append('1) + (1')
-invalid_expressions.append('(((1))')
-invalid_expressions.append('((1)))')
-
-# invalid expression
-invalid_expressions.append('1 * ()')
-
-# invalid implicit multiplication stuff
-invalid_expressions.append('1 2')
-invalid_expressions.append('m 2')
-invalid_expressions.append('1 m 1')
-
-
-# if this is run as a script, then do some basic calculations
 if __name__ == "__main__":
-    if run_unit_tests:
-        if debug_output:
-            print('Running unit tests')
-        all_passed = True
-        # run valid expressions
-        for eq in valid_expressions:
-            if debug_output:
-                print('- Checking "%s" for validity' % (eq))
-            valid = True
-            try:
-                result = process_user_equation(eq)
-            except (QuantityError, ParserError):
-                valid = False
-            if not valid:
-                all_passed = False
-                print('ERROR: the expression "%s" failed to evaluate' % (eq))
-        # run invalid expressions
-        for eq in invalid_expressions:
-            if debug_output:
-                print('- Checking "%s" for failure' % (eq))
-            valid = True
-            try:
-                result = process_user_equation(eq)
-            except (QuantityError, ParserError):
-                valid = False
-            if valid:
-                all_passed = False
-                print('ERROR: the expression "%s" did not fail' % (eq))
-        assert all_passed
-        if debug_output:
-            print('- completed')
-    # run_gui()
+    pass
