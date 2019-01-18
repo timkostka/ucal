@@ -26,7 +26,7 @@ import math
 import decimal
 import string
 
-from ucal_units import units
+import ucal_units
 
 # An expression is evaluated in the following manner
 # - First, the equation is tokenized
@@ -60,6 +60,9 @@ debug_output = False
 
 # if True, unit tests will be run
 run_unit_tests = True
+
+# if True, will verify conversions were done correctly
+verify_unit_conversions = True
 
 ##################
 # END OF OPTIONS #
@@ -164,16 +167,13 @@ def error_message(title, message):
 class Quantity:
     """A Quantity represents a physical quantity--a number with units."""
 
-    def __init__(self, text='', value=decimal.Decimal(0), units=None):
+    def __init__(self, value=decimal.Decimal(0), units=None):
         """Initialize."""
-        if not text:
-            self.value = value
-            if units is not None:
-                self.units = units
-            else:
-                self.units = [0.0] * unit_count
+        self.value = decimal.Decimal(value)
+        if units is not None:
+            self.units = units
         else:
-            self = Quantity.evaluate(text)
+            self.units = [0.0] * unit_count
 
     def __str__(self):
         """Convert to a human-readable string."""
@@ -331,8 +331,7 @@ implicit_multiplication_rules[Token.variable] = [Token.variable]
 implicit_multiplication_rules[Token.closing_parenthesis] = (
     [Token.variable, Token.opening_parenthesis])
 
-
-# syntax rules for what token can follow another token
+# rules for what token can follow another token
 token_can_follow = dict()
 token_can_follow[Token.opening_parenthesis] = {Token.function,
                                                Token.variable,
@@ -373,43 +372,43 @@ token_can_end = {Token.closing_parenthesis,
 unit_systems = dict()
 unit_systems['SI'] = ['kg', 'm', 's', 'A', 'K', 'mol', 'cd', 'byte']
 
-# unit measures
-unit_measure = dict()
-unit_measure['N'] = 'force'
-unit_measure['W'] = 'power'
-unit_measure['J'] = 'energy'
-unit_measure['m'] = 'length'
-unit_measure['kg'] = 'mass'
-unit_measure['s'] = 'time'
-unit_measure['A'] = 'current'
-unit_measure['K'] = 'temperature'
-unit_measure['mol'] = 'amount'
-unit_measure['cd'] = 'intensity'
-unit_measure['m^2'] = 'area'
-unit_measure['m^3'] = 'volume'
-unit_measure['m/s'] = 'velocity'
-unit_measure['m/s^2'] = 'acceleration'
-unit_measure['kg/m^3'] = 'density'
-unit_measure['Pa'] = 'stress'
-unit_measure['V'] = 'electric potential'
-unit_measure['F'] = 'capacitance'
-unit_measure['Ohm'] = 'electric resistance'
-unit_measure['H'] = 'inductance'
-unit_measure['Mbps'] = 'data rate'
-unit_measure['byte'] = 'data'
-unit_measure['Hz'] = 'frequency'
+# hold dictionary mapping unit name to a Quantity()
+unit_def = dict()
 
-# get a set of all units
-all_units = set()
-all_units.update(units.keys())
-for x in unit_systems.values():
-    all_units.update(x)
-
-# target base unit system
+# base unit system
 base_units = unit_systems['SI']
 
-# get number of units
+# number of base units
 unit_count = len(base_units)
+
+# natural units for output
+natural_unit = dict()
+natural_unit['N'] = 'force'
+natural_unit['W'] = 'power'
+natural_unit['J'] = 'energy'
+natural_unit['m'] = 'length'
+natural_unit['kg'] = 'mass'
+natural_unit['s'] = 'time'
+natural_unit['A'] = 'current'
+natural_unit['K'] = 'temperature'
+natural_unit['mol'] = 'amount'
+natural_unit['cd'] = 'intensity'
+natural_unit['m^2'] = 'area'
+natural_unit['m^3'] = 'volume'
+natural_unit['m/s'] = 'velocity'
+natural_unit['m/s^2'] = 'acceleration'
+natural_unit['kg/m^3'] = 'density'
+natural_unit['Pa'] = 'stress'
+natural_unit['V'] = 'electric potential'
+natural_unit['F'] = 'capacitance'
+natural_unit['Ohm'] = 'electric resistance'
+natural_unit['H'] = 'inductance'
+natural_unit['Mbps'] = 'data rate'
+natural_unit['byte'] = 'data'
+natural_unit['Hz'] = 'frequency'
+
+# hold conversion from unit tuple to output unit
+output_unit = dict()
 
 # prefix operators and their corresponding precedence and functions
 prefix_operators = dict()
@@ -439,12 +438,12 @@ starting_variable_characters = ('abcdefghijklmnopqrstuvwxyz'
 # valid following characters for variables and functions
 following_variable_characters = starting_variable_characters + '0123456789'
 
+
 # determine functions and how many arguments each of them take
 # functions['sqrt'] -> (Quantity.function_sqrt, arg_count)
 functions = dict()
 prefix = 'function_'
-# print(inspect.getmembers(Quantity, predicate=inspect.isfunction))
-names = inspect.getmembers(Quantity, predicate=inspect.isfunction(x))
+names = inspect.getmembers(Quantity, predicate=inspect.isfunction)
 names = [x for x in names if x[0].startswith(prefix)]
 print('Adding %d functions.' % (len(names)))
 for f in names:
@@ -887,56 +886,63 @@ def calculate(equation):
     return evaluate_tokens(tokens)[1]
 
 
-# hold dictionary mapping unit name to a Quantity()
-unit_def = dict()
+def import_units():
+    """Read in and convert units from ucal_units."""
+    global unit_def
+    global natural_unit
+    global output_unit
+    # get the set of units to import
+    new_units = dict(ucal_units.units)
+    #all_units = set()
+    #all_units.update(ucal_units.units.keys())
+    #for x in unit_systems.values():
+    #    all_units.update(x)
+    # add base unit definitions
+    for i, unit_name in enumerate(base_units):
+        unit_def[unit_name] = Quantity(value=decimal.Decimal('1'),
+                                       units=[0.0] * unit_count)
+        unit_def[unit_name].units[i] = 1.0
+    # convert each unit to a Quantity
+    while new_units:
+        # print units.keys()
+        decoded_something = False
+        for key in list(new_units.keys()):
+            value = new_units[key]
+            tokens = parse_to_tokens(value)
+            add_implicit_multiplication(tokens)
+            # print key, value, tokens
+            # check to see if all variables are defined units
+            this_units = [x[1] in unit_def
+                          for x in tokens
+                          if x[0] == Token.variable]
+            # if not all units are defined, skip it for now
+            if this_units:
+                if not all(this_units):
+                    continue
+            # evaluate it and add this unit definition
+            unit_def[key] = calculate(value)
+            decoded_something = True
+            del new_units[key]
+        # if we couldn't decode anything, the remaining units are ill-defined
+        if not decoded_something:
+            print('ERROR: could not decode all units')
+            for x in sorted(new_units.keys()):
+                print('* %s: %s' % (x, new_units[x]))
+            raise ValueError
+    # form a dictionary of all unit types
+    # we want: unit_measure[tuple(Quantity.units)] = 'length'
+    for key in sorted(natural_unit.keys()):
+        value = calculate(key)
+        natural_unit[tuple(value.units)] = [natural_unit[key], key,
+                                            calculate(key)]
+    # verify that all unit definitions match units
+    if verify_unit_conversions:
+        for key, value in unit_def.items():
+            left = calculate(key)
+            assert left.units == value.units
 
-#if allow_percent:
-#    unit_def['%'] = Quantity(value=decimal.Decimal('0.01'))
 
-# add base unit definitions
-for i, unit_name in enumerate(base_units):
-    unit_def[unit_name] = Quantity(value=decimal.Decimal('1'),
-                                   units=[0.0] * unit_count)
-    unit_def[unit_name].units[i] = 1.0
-
-# convert each unit to a Quantity
-while units:
-    # print units.keys()
-    decoded_something = False
-    for key in list(units.keys()):
-        value = units[key]
-        tokens = parse_to_tokens(value)
-        add_implicit_multiplication(tokens)
-        # print key, value, tokens
-        # check to see if all variables are defined units
-        this_units = [x[1] in unit_def
-                      for x in tokens
-                      if x[0] == Token.variable]
-        # if not all units are defined, skip it for now
-        if this_units:
-            if not all(this_units):
-                continue
-        # evaluate it and add this unit definition
-        unit_def[key] = calculate(value)
-        decoded_something = True
-        del units[key]
-    # if we couldn't decode anything else, the remaining units are ill-defined
-    if not decoded_something:
-        print('ERROR: could not decode all units')
-        for x in sorted(units.keys()):
-            print('* %s: %s' % (x, units[x]))
-        raise ValueError
-
-# form a dictionary of all unit types
-# we want: unit_measure[tuple(Quantity.units)] = 'length'
-for key in sorted(unit_measure.keys()):
-    value = calculate(key)
-    unit_measure[tuple(value.units)] = [unit_measure[key], key, calculate(key)]
-
-# verify that all unit definitions match units
-for key, value in unit_def.items():
-    left = calculate(key)
-    assert left.units == value.units
+import_units()
 
 
 def matching_units(value1, value2):
@@ -957,8 +963,8 @@ def get_measure(quantity):
 
     """
     check = tuple(quantity.units)
-    if check in unit_measure:
-        return unit_measure[check][0]
+    if check in natural_unit:
+        return natural_unit[check][0]
     return None
 
 
@@ -1007,16 +1013,16 @@ def to_string(quantity, output_units=None, include_measure=False):
             return '%s %s%s' % (value_str, output_units, measure)
     # otherwise look for the default units for this type
     key = tuple(quantity.units)
-    if key in unit_measure:
+    if key in natural_unit:
         if debug_output:
             print('- found match in unit_measure')
-        quantity.value /= unit_measure[key][2].value
+        quantity.value /= natural_unit[key][2].value
         quantity.value *= decimal.Decimal(
             '1.' + '0' * decimal.getcontext().prec)
         value_str = str(quantity.value)
         if '.' in value_str:
             value_str = value_str.rstrip('0').rstrip('.')
-        return "%s %s%s" % (value_str, unit_measure[key][1], measure)
+        return "%s %s%s" % (value_str, natural_unit[key][1], measure)
     # or output in base SI units
     quantity.value *= decimal.Decimal('1.' + '0' * decimal.getcontext().prec)
     if debug_output:
