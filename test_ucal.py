@@ -114,6 +114,13 @@ class TestSyntax(unittest.TestCase):
         self.no_exception(ucal.evaluate, '(1) m')
         self.no_exception(ucal.evaluate, '(1)(1)')
 
+    def test_power_evaluation_order(self):
+        """Test order of power evaluation."""
+        self.assertEqual(ucal.evaluate('3^3^3'), '7625597484987')
+
+    def test_evaluation_order_2(self):
+        """Test order of power/factorial evaluations."""
+        self.assertEqual(ucal.evaluate('3^2!'), '9')
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
