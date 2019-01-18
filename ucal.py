@@ -404,18 +404,17 @@ natural_unit['Mbps'] = 'data rate'
 natural_unit['byte'] = 'data'
 natural_unit['Hz'] = 'frequency'
 
-# hold conversion from unit tuple to output unit
-output_unit = dict()
+# hold conversion from a Quantity unit tuple to a natural output unit
+# natural_unit_map[(1.0, 0.0, ...)] = ('m', 'length', evaluate('m'))
+natural_unit_map = dict()
 
 # prefix operators and their corresponding precedence and functions
 prefix_operators = dict()
-
 prefix_operators['-'] = (2, Quantity.__neg__)
 prefix_operators['+'] = (2, Quantity.__pos__)
 
 # infix operators and their corresponding precedence and functions
 infix_operators = dict()
-
 infix_operators['+'] = (4, Quantity.__add__)
 infix_operators['-'] = (4, Quantity.__sub__)
 infix_operators['/'] = (3, Quantity.__truediv__)
@@ -425,15 +424,13 @@ infix_operators['^'] = (1, Quantity.__pow__)
 
 # postfix operators and their corresponding precedence and functions
 postfix_operators = dict()
-
 postfix_operators['!'] = (1, Quantity.factorial)
 
 # valid starting characters for variables and functions
-starting_variable_characters = ('abcdefghijklmnopqrstuvwxyz'
-                                'ABCDEFGHIJKLMNOPQRSTUVWXYZ')
+starting_variable_characters = string.ascii_letters
 
 # valid following characters for variables and functions
-following_variable_characters = starting_variable_characters + '0123456789'
+following_variable_characters = string.ascii_letters + string.digits
 
 
 # determine functions and how many arguments each of them take
@@ -667,7 +664,7 @@ def parse_to_tokens(equation):
 
 
 def evaluate_flat_tokens(tokens):
-    """Evaluate the given tokens that do not contain parentheses."""
+    """Evaluate the given non-parenthesis tokens."""
     if debug_output:
         print('Evaluating tokens ', tokens)
     tokens = list(tokens)
@@ -679,10 +676,10 @@ def evaluate_flat_tokens(tokens):
                         for i, x in enumerate(tokens)
                         if x[0] == Token.function]
     for i in reversed(function_indices):
-        if tokens[i][1] not in functions:
+        if tokens[i][1] not in math_functions:
             message = 'Function "%s" not recognized' % (tokens[i][1])
             raise ParserError(message)  # 'Unrecognized function', message)
-        this_function = functions[tokens[i][1]]
+        this_function = math_functions[tokens[i][1]]
         if this_function[0] != 1:
             message = 'Functions with 2+ arguments not supported'
             raise ParserError(message)  # 'Invalid function', message)
@@ -730,14 +727,12 @@ def evaluate_flat_tokens(tokens):
     # at this point, it should be a single value
     assert len(tokens) == 1
     assert tokens[0][0] == Token.value
-    return tokens[0]
+    assert type(tokens[0][1]) is Quantity
+    return tokens[0][1]
 
 
 def evaluate_tokens(tokens):
-    """
-    Return the result of the given equation.
-
-    """
+    """Return the result of the given equation as a Quantity."""
     if debug_output:
         print('\nstart of calculate2:')
         for x in tokens:
@@ -757,17 +752,13 @@ def evaluate_tokens(tokens):
                 # eliminate this parenthesis level
                 # print 'before ->', tokens
                 value = evaluate_flat_tokens(tokens[opening_index[-1] + 1:i])
-                tokens[opening_index[-1]:i + 1] = [value]
+                tokens[opening_index[-1]:i + 1] = [[Token.value, value]]
                 # print 'after ->', tokens
                 opening_index = opening_index[:-1]
                 break
-    # print tokens
-    return evaluate_flat_tokens(tokens)
-    # print 'end of calculate2:'
-    # for x in tokens:
-    #    print x
-    # print
-    # assert False
+    value = evaluate_flat_tokens(tokens)
+    assert type(value) is Quantity
+    return value
 
 
 def check_token_syntax(tokens):
@@ -842,7 +833,7 @@ def evaluate_value(text):
 
 def calculate(equation):
     """
-    Evaluate the string equation and return the result.
+    Evaluate the string equation and return the result as a Quantity.
 
     """
     # store units used by the equation
@@ -880,20 +871,15 @@ def calculate(equation):
                 # variable not recognized
                 message = 'Variable "%s" is undefined.' % x[1]
                 raise ParserError(message, equation)
-    return evaluate_tokens(tokens)[1]
+    return evaluate_tokens(tokens)
 
 
 def import_units():
     """Read in and convert units from ucal_units."""
     global unit_def
     global natural_unit
-    global output_unit
     # get the set of units to import
     new_units = dict(ucal_units.units)
-    #all_units = set()
-    #all_units.update(ucal_units.units.keys())
-    #for x in unit_systems.values():
-    #    all_units.update(x)
     # add base unit definitions
     for i, unit_name in enumerate(base_units):
         unit_def[unit_name] = Quantity(value=decimal.Decimal('1'),
@@ -926,12 +912,6 @@ def import_units():
             for x in sorted(new_units.keys()):
                 print('* %s: %s' % (x, new_units[x]))
             raise ValueError
-    # form a dictionary of all unit types
-    # we want: unit_measure[tuple(Quantity.units)] = 'length'
-    for key in sorted(natural_unit.keys()):
-        value = calculate(key)
-        natural_unit[tuple(value.units)] = [natural_unit[key], key,
-                                            calculate(key)]
     # verify that all unit definitions match units
     if verify_unit_conversions:
         for key, value in unit_def.items():
@@ -939,7 +919,18 @@ def import_units():
             assert left.units == value.units
 
 
+def create_natural_unit_map():
+    """Populate the natural_unit_map variable."""
+    global natural_unit_map
+    # natural_unit_map[(1.0, 0.0, ...)] = ('m', 'length', evaluate('m'))
+    for key in sorted(natural_unit.keys()):
+        # get the units of this
+        value = calculate(key)
+        natural_unit_map[tuple(value.units)] = (key, natural_unit[key], value)
+
+
 import_units()
+create_natural_unit_map()
 
 
 def matching_units(value1, value2):
@@ -1010,16 +1001,16 @@ def to_string(quantity, output_units=None, include_measure=False):
             return '%s %s%s' % (value_str, output_units, measure)
     # otherwise look for the default units for this type
     key = tuple(quantity.units)
-    if key in natural_unit:
+    if key in natural_unit_map:
         if debug_output:
             print('- found match in unit_measure')
-        quantity.value /= natural_unit[key][2].value
+        quantity.value /= natural_unit_map[key][2].value
         quantity.value *= decimal.Decimal(
             '1.' + '0' * decimal.getcontext().prec)
         value_str = str(quantity.value)
         if '.' in value_str:
             value_str = value_str.rstrip('0').rstrip('.')
-        return "%s %s%s" % (value_str, natural_unit[key][1], measure)
+        return "%s %s%s" % (value_str, natural_unit_map[key][0], measure)
     # or output in base SI units
     quantity.value *= decimal.Decimal('1.' + '0' * decimal.getcontext().prec)
     if debug_output:
