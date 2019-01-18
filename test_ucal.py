@@ -41,11 +41,35 @@ class TestSyntax(unittest.TestCase):
         self.no_exception(ucal.evaluate, '1E6')
 
     def test_arithmetic(self):
-        """Test basic arithmetic oeprations."""
+        """Test basic arithmetic operations."""
         self.assertEqual(ucal.evaluate('1+2'), '3')
         self.assertEqual(ucal.evaluate('3*4'), '12')
         self.assertEqual(ucal.evaluate('8/2'), '4')
         self.assertEqual(ucal.evaluate('5!'), '120')
+
+    def test_decimal(self):
+        """Test decimal number comprehension."""
+        self.assertEqual(ucal.evaluate('0'), '0')
+        self.assertEqual(ucal.evaluate('0123'), '123')
+        self.assertEqual(ucal.evaluate('+1e555'), '1e555')
+        self.assertEqual(ucal.evaluate('1e-67'), '1e-67')
+
+    def test_binary(self):
+        """Test binary number comprehension."""
+        self.assertEqual(ucal.evaluate('0B0'), '0')
+        self.assertEqual(ucal.evaluate('0b0'), '0')
+        self.assertEqual(ucal.evaluate('0b11'), '3')
+        self.assertEqual(ucal.evaluate('0b1111'), '15')
+        self.assertRaises(ucal.ParserError, ucal.evaluate, '0b')
+
+    def test_hexadecimal(self):
+        """Test hexadecimal number comprehension."""
+        self.assertEqual(ucal.evaluate('0x0'), '0')
+        self.assertEqual(ucal.evaluate('0X0'), '0')
+        self.assertEqual(ucal.evaluate('0x123'), '291')
+        self.assertEqual(ucal.evaluate('0xAbCdEf'), '11259375')
+        self.assertRaises(ucal.ParserError, ucal.evaluate, '0x')
+        self.assertRaises(ucal.ParserError, ucal.evaluate, '0xAG')
 
     def test_factorial(self):
         """Test the factorial postfix operator."""
