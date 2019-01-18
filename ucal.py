@@ -24,6 +24,7 @@ import inspect
 import textwrap
 import math
 import decimal
+import string
 
 from ucal_units import units
 
@@ -206,6 +207,11 @@ class Quantity:
 
     def __repr__(self):
         return 'Quantity(' + str(self) + ')'
+
+    def __eq__(self, other):
+        if type(other) is Quantity:
+            return self.value == other.value and self.units == other.units
+        return self.value == other and self.is_unitless()
 
     def __add__(self, other):
         if self.units != other.units:
@@ -448,8 +454,22 @@ for f in names:
 
 def parse_value_at_start(text):
     """Return the string of the value at the start, or None if not found."""
-    i = 0
+    # parse hexadecimal number
+    if len(text) > 2 and text[:2].lower() == '0x':
+        i = 2
+        while len(text) > i and text[i] in string.hexdigits:
+            i += 1
+        if i > 2:
+            return text[:i]
+    # parse binary number
+    if len(text) > 2 and text[:2].lower() == '0b':
+        i = 2
+        while len(text) > i and text[i] in '01':
+            i += 1
+        if i > 2:
+            return text[:i]
     # skip sign if present
+    i = 0
     if i >= len(text):
         return None
     if text[i] in '-+':
@@ -815,6 +835,13 @@ def interpret_percent_sign(tokens):
         i += 1
 
 
+def evaluate_value(text):
+    """Evaluate the string value and return a Decimal."""
+    if text[:2].lower() == '0x' or text[:2].lower() == '0b':
+        return decimal.Decimal(eval(text))
+    return decimal.Decimal(text)
+
+
 def calculate(equation):
     """
     Evaluate the string equation and return the result.
@@ -842,15 +869,15 @@ def calculate(equation):
     # convert each value to a Quantity
     for x in tokens:
         if x[0] == Token.value:
-            x[1] = Quantity(value=decimal.Decimal(x[1]))
+            x[1] = Quantity(value=evaluate_value(x[1]))
     # replace all variables and units with proper values
     for x in tokens:
         if x[0] == Token.variable:
             # see if it's a unit
             if x[1] in unit_def:
                 units_in_equation.append(x[1])
-                x[1] = unit_def[x[1]]
                 x[0] = Token.value
+                x[1] = unit_def[x[1]]
             else:
                 # variable not recognized
                 message = 'Variable "%s" is undefined.' % x[1]
