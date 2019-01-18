@@ -122,5 +122,6 @@ class TestSyntax(unittest.TestCase):
         """Test order of power/factorial evaluations."""
         self.assertEqual(ucal.evaluate('3^2!'), '9')
 
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)

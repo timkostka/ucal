@@ -80,7 +80,7 @@ def show_units_gui(unit_names):
     window.Close()
 
 
-def set_gui_colors(sg):
+def set_gui_colors():
     """Set the color scheme."""
     # this scheme is similar to Windows default colors
     sg.SetOptions(background_color='#F0F0F0',
@@ -96,14 +96,14 @@ def get_icon_path():
     icon_filename = r'ucal.ico'
     icon_path = os.path.join(os.path.abspath('.'), icon_filename)
     if os.path.isfile(icon_path):
-        print('Using icon at %s.' % (icon_path))
+        print('Using icon at %s.' % icon_path)
     else:
         icon_path = os.path.join(os.path.dirname(__file__), icon_filename)
         if not os.path.isfile(icon_path):
-            print('Icon file "%s" not found.' % (icon_path))
+            print('Icon file "%s" not found.' % icon_path)
             icon_path = None
         else:
-            print('Using icon at %s.' % (icon_path))
+            print('Using icon at %s.' % icon_path)
     return icon_path
 
 
@@ -111,7 +111,6 @@ def run():
     """Start the GUI to begin processing user input."""
     print('Starting GUI...')
     # hold the index of the next answer variable
-    # next_answer_index = 0
     history_position = 0
     # hold answer variables ad the input for them
     answer_history = []
@@ -126,7 +125,7 @@ def run():
     myappid = 'unit.calculator'
     ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
     # change look and feel
-    set_gui_colors(sg)
+    set_gui_colors()
     sg.SetOptions(element_padding=(0, 0))
     sg.SetOptions(font=('Segoe UI', 9))
     # window top of layout
@@ -171,28 +170,18 @@ def run():
     window = sg.Window('Unit Calculator',
                        return_keyboard_events=True,
                        icon=get_icon_path())
-    # pady=0, relief='flat'
-    # buttons['calculate'].TKroot
     window.Layout(layout)
-    # input_element.SetFocus()
     window.Show(layout)
     window.TKroot.focus_force()
-    # first_loop = True
     while True:
         # read current state
         button, value = window.Read()
-        # if first_loop:
-        #    first_loop = False
-        #    input_element.SetFocus()
         # detect window X button pressed to close window
         if value is None:
             break
         # loop until something is pressed
         if button is None:
             continue
-        # print(type(button), button)
-        # if button:
-        #    print(button, [ord(c) for c in button])
         # if we enter an infix operator, insert the previous answer first
         if button and input_element.Get() == button and input_history:
             if button in ucal.infix_operators:
@@ -210,15 +199,8 @@ def run():
             history_position += 1
             new_text = input_history[-history_position]
             input_element.Update(new_text)
-            # layout[input_index][0].TKEntry.mark_set('insert',
-            #                                        '1.%d' % len(new_text))
-            # layout[input_index][0].TKEntry.select_range(0, 'end')
             input_element.TKEntry.selection_clear()
             input_element.TKEntry.icursor('end')
-            # layout[input_index][0].TKEntry.tag_add('sel',
-            #                                       '1.1',
-            #                                       '1.%d' % (len(new_text)))
-            # layout[input_index][0].TKEntry.selection_range(0, 'end')
         if button == 'Down:40' and history_position > 0:
             history_position -= 1
             if history_position > 0:
@@ -246,11 +228,7 @@ def run():
             button = 'Units'
             input_element.Update('')
         if button == 'Units':
-            # window.TKroot.grab_set_global()
-            # window.Disable()
-            show_units_gui()
-            # window.self.TKroot.grab_release()
-        # exit
+            show_units_gui(sorted(ucal.unit_def.keys()))
         if button == 'Exit':
             break
         # calculate values if requested
@@ -259,14 +237,11 @@ def run():
             history_position = 0
             # try to parse new value
             this_input = value[0]
-            this_answer = None
-            # error = False
             try:
                 this_answer = ucal.process_user_equation(this_input)
             except (ucal.ParserError, ucal.QuantityError) as e:
-                # error = True
                 this_answer = e.args[0]
-            except (decimal.DecimalException) as e:
+            except decimal.DecimalException:
                 this_answer = 'Undefined'
             # shift history values up one
             i = starting_history_index
@@ -275,15 +250,13 @@ def run():
                 i += 1
                 layout[i][0].Update(layout[i + 3][0].DisplayText)
                 i += 2
+            # add values to history
             answer_history.append(this_answer)
             input_history.append(this_input)
             layout[i][0].Update(this_input)
-            layout[i + 1][0].Update('%s' % (this_answer))
-            # add new answer variable
-            # next_answer_index += 1
+            layout[i + 1][0].Update('%s' % this_answer)
             # clear input field
             input_element.Update('')
-    # print(button)
     window.CloseNonBlockingForm()
 
 
