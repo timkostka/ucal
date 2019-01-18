@@ -27,7 +27,7 @@ class TestSyntax(unittest.TestCase):
         return True
 
     def test_value_comprehension(self):
-        """Test for valid value definitions"""
+        """Test for valid value definitions."""
         self.no_exception(ucal.evaluate, '1')
         self.no_exception(ucal.evaluate, '123457890')
         self.no_exception(ucal.evaluate, '001')
@@ -40,6 +40,27 @@ class TestSyntax(unittest.TestCase):
         self.no_exception(ucal.evaluate, '-1e-9')
         self.no_exception(ucal.evaluate, '1E6')
 
+    def test_arithmetic(self):
+        """Test basic arithmetic oeprations."""
+        self.assertEqual(ucal.evaluate('1+2'), '3')
+        self.assertEqual(ucal.evaluate('3*4'), '12')
+        self.assertEqual(ucal.evaluate('8/2'), '4')
+        self.assertEqual(ucal.evaluate('5!'), '120')
+
+    def test_factorial(self):
+        """Test the factorial postfix operator."""
+        self.assertEqual(ucal.evaluate('0!'), '1')
+        self.assertEqual(ucal.evaluate('1!'), '1')
+        self.assertEqual(ucal.evaluate('2!'), '2')
+        self.assertEqual(ucal.evaluate('5!'), '120')
+        self.assertEqual(ucal.evaluate('18!'), '6402373705728000')
+
+    def test_percent(self):
+        """Test percentage evaluation."""
+        self.assertEqual(ucal.evaluate('100%'), '1')
+        self.assertEqual(ucal.evaluate('50%'), '0.5')
+        self.assertEqual(ucal.evaluate('25%'), '0.25')
+
     def test_unbalanced_parentheses(self):
         """Test for unbalanced parentheses."""
         self.assertRaises(ucal.ParserError, ucal.evaluate, '1)')
@@ -47,6 +68,12 @@ class TestSyntax(unittest.TestCase):
         self.assertRaises(ucal.ParserError, ucal.evaluate, '(1))')
         self.assertRaises(ucal.ParserError, ucal.evaluate, '((1)')
         self.assertRaises(ucal.ParserError, ucal.evaluate, ')1(')
+
+    def test_balanced_parentheses(self):
+        """Test for balanced parentheses."""
+        self.assertEqual(ucal.evaluate('(1)'), '1')
+        self.assertEqual(ucal.evaluate('((1))'), '1')
+        self.assertEqual(ucal.evaluate('(((((1)))))'), '1')
 
     def test_invalid_implicit_multiplication(self):
         """Test invalid implicit multiplication."""
