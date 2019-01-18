@@ -581,7 +581,7 @@ def parse_to_tokens(equation):
     # set to true if a value immediately preceded the current character
     parsed_values = []
     value_before = False
-    found_operator = False
+    #found_operator = False
     while equation:
         # print '-->', equation, parsed_values
         # trim equation if necessary
@@ -622,6 +622,7 @@ def parse_to_tokens(equation):
                 continue
         # look for infix operator if value was preceeding
         if value_before:
+            found_operator = False
             for operator in infix_operators.keys():
                 if equation.startswith(operator):
                     found_operator = True
@@ -633,6 +634,7 @@ def parse_to_tokens(equation):
                 continue
         # look for postfix operator if value was preceeding
         if value_before:
+            found_operator = False
             for operator in postfix_operators.keys():
                 if equation.startswith(operator):
                     found_operator = True
