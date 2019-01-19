@@ -80,7 +80,11 @@ class TestSyntax(unittest.TestCase):
         """Test conversion to hexademical numbers."""
         self.assertEqual(ucal.interpret('67 in bin'), '0b1000011')
 
-    def test_target_units(self):
+    def test_output_units(self):
+        """Test automatic output conversions."""
+        self.assertEqual(ucal.evaluate('1A*Ohm'), '1 V')
+
+    def test_target_simple_units(self):
         """Test conversion to specified units."""
         self.assertEqual(ucal.interpret('1m to mm'), '1000 mm')
         self.assertEqual(ucal.interpret('1m as mm'), '1000 mm')
