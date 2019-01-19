@@ -19,7 +19,6 @@ Usage:
 
 import os
 import sys
-import platform
 import inspect
 import textwrap
 import math
@@ -65,9 +64,9 @@ verify_unit_conversions = True
 # END OF OPTIONS #
 ##################
 
-
-print('Unit calculator starting...')
-print('We are at %s.' % (os.getcwd()))
+if debug_output:
+    print('Unit calculator starting...')
+    print('We are at %s.' % (os.getcwd()))
 
 # PyInstaller creates a temp folder and stores path in _MEIPASS
 # this detects if it is present and if so, uses that as the base path
@@ -75,8 +74,8 @@ try:
     base_path = sys._MEIPASS
 except AttributeError:
     base_path = os.path.abspath('.')
-print('Local files are at %s.' % (base_path))
-print('Windows release is %s.' % (platform.release()))
+if debug_output:
+    print('Local files are at %s.' % (base_path))
 
 
 class QuantityError(Exception):
@@ -942,7 +941,6 @@ def matching_units(value1, value2):
     return value1.units == value2.units
 
 
-# attempt to find the unit of measure of the given quantity
 def get_measure(quantity):
     """
     Return the measure of the units of the given quantity, or None.
@@ -951,15 +949,13 @@ def get_measure(quantity):
 
     """
     check = tuple(quantity.units)
-    if check in natural_unit:
-        return natural_unit[check][0]
+    if check in natural_unit_map:
+        return natural_unit_map[check][1]
     return None
 
 
-# output units, in order of precedence
-# if the units match one of these exactly, display it in those units
-# else, display it in base units
 def to_string(quantity, output_units=None, include_measure=False):
+    """Convert the given Quantity to a string."""
     if debug_output:
         print('Converting "%s" with output_units=%s'
               % (quantity, output_units))

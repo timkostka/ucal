@@ -117,6 +117,7 @@ def run():
     input_history = []
     # set DPI awareness on
     # this DLL only exists on Win8 and newer
+    print('Windows release is %s.' % (platform.release()))
     if int(platform.release()) >= 8:
         print('Registering DPI awareness.')
         ctypes.windll.shcore.SetProcessDpiAwareness(True)
