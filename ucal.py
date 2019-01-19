@@ -187,6 +187,11 @@ class Quantity:
         """Return True if the value is unitless."""
         return all(x == 0.0 for x in self.units)
 
+    def is_integer(self):
+        """Return True if the value is an integer."""
+        return (self.is_unitless() and
+                self.value == self.value.to_integral_value())
+
     def factorial(self):
         if self.units != [0.0] * unit_count:
             raise QuantityError('Inconsistent units', self)
@@ -999,24 +1004,38 @@ def process_user_equation(equation):
     """Return the result of the equation which may include unit specifiers."""
     # set high working precision
     decimal.getcontext().prec = working_precision_digits
-    # see if string has desired units
-    # if "in" is used, see if the equation is written in the form "x in y"
-    if ' to ' in equation:
-        equation, target_units = equation.rsplit(' to ', 1)
-        result = calculate(equation)
-    elif ' as ' in equation:
-        equation, target_units = equation.rsplit(' as ', 1)
-        result = calculate(equation)
-    elif ' in ' in equation:
-        possible_equation, possible_units = equation.rsplit(' in ', 1)
+    # set to True when we find a result
+    interpreted_result = False
+    # see if the equation is written in the form "x in y"
+    separators = ['to', 'as', 'in']
+    for word in separators:
+        word = ' ' + word + ' '
+        if word not in equation:
+            continue
+        possible_equation, possible_units = equation.rsplit(word, 1)
         try:
             result = calculate(possible_equation)
-            target_units = possible_units
-            assert matching_units(result, target_units)
+            if possible_units.lower() == 'hex':
+                if not result.is_integer():
+                    return 'only integers can be written as hex'
+                result = hex(int(result.value.to_integral_value()))
+                unit_def['Ans'] = result
+                return result
+            elif (possible_units.lower() == 'bin' or
+                  possible_units.lower() == 'binary'):
+                if not result.is_integer():
+                    return 'only integers can be written as binary'
+                result = bin(int(result.value.to_integral_value()))
+                unit_def['Ans'] = result
+                return result
+            target_units = calculate(possible_units)
+            assert result.matches_units(target_units)
+            interpreted_result = True
+            break
         except (AssertionError, QuantityError, ParserError):
-            result = calculate(equation)
-            target_units = None
-    else:
+            pass
+    # if we didn't find a result, calculate the entire equation
+    if not interpreted_result:
         target_units = None
         result = calculate(equation)
     # save answer as "Ans"
