@@ -86,6 +86,10 @@ class TestSyntax(unittest.TestCase):
         self.assertEqual(ucal.interpret('1m as mm'), '1000 mm')
         self.assertEqual(ucal.interpret('1m in mm'), '1000 mm')
 
+    def test_target_compound_units(self):
+        """Test conversion to specified units."""
+        self.assertEqual(ucal.interpret('1in^2 to mm^2'), '645.16 mm^2')
+
     def test_target_units_fallback(self):
         """Test fallback conversion if target units are invalid."""
         self.assertEqual(ucal.interpret('1 in kg'), '0.0254 kg m')
