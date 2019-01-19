@@ -64,19 +64,6 @@ verify_unit_conversions = True
 # END OF OPTIONS #
 ##################
 
-if debug_output:
-    print('Unit calculator starting...')
-    print('We are at %s.' % (os.getcwd()))
-
-# PyInstaller creates a temp folder and stores path in _MEIPASS
-# this detects if it is present and if so, uses that as the base path
-try:
-    base_path = sys._MEIPASS
-except AttributeError:
-    base_path = os.path.abspath('.')
-if debug_output:
-    print('Local files are at %s.' % (base_path))
-
 
 class QuantityError(Exception):
     """
@@ -93,71 +80,16 @@ class ParserError(Exception):
     pass
 
 
-def framed_message(messages, width=79):
-    """Print out a formatted message which fits in a specified width."""
-    # format messages
-    if not isinstance(messages, list):
-        messages = [messages]
-    for i in range(len(messages)):
-        if not isinstance(messages[i], tuple):
-            messages[i] = ('', messages[i])
-    # store the message width
-    max_header_width = max(len(x[0]) for x in messages)
-    width = max(width, max_header_width + 20 + 6)
-    # print the top frame after a blank line
-    print('')
-    print('*' * width)
-    print('*' + (' ' * (width - 2)) + '*')
-    # process each message
-    # *  Header: Text             *
-    for message in messages:
-        header = message[0]
-        # format text into broken lines
-        text = ''
-        for line in message[1].split('\n'):
-            text += textwrap.fill(
-                line,
-                width=width - 6 - len(header))
-            text += '\n'
-        # remove trailing newlines
-        while text and text[-1] == '\n':
-            text = text[:-1]
-        # break into a list
-        text = text.split('\n')
-        # process each line
-        for i in range(len(text)):
-            if i == 0:
-                line = '%s%s' % (header, text[i])
-            else:
-                line = '%s%s' % (' ' * len(header), text[i])
-            if len(line) < width - 6:
-                line += ' ' * (width - 6 - len(line))
-            print('*  %s  *' % (line))
-        print('*' + (' ' * (width - 2)) + '*')
-    # print the bottom frame
-    print('*' * width)
-
-
-def get_trace(omitted_frames=1):
-    """Return a compressed stack trace."""
-    last_file = ''
-    message = ''
-    for frame in inspect.stack()[omitted_frames:]:
-        this_file = frame[1].split('/')[-1]
-        if this_file != last_file:
-            message += this_file + ':'
-            last_file = this_file
-        else:
-            message += ' ' * len(last_file) + ' '
-        message += frame[3] + ':' + str(frame[2])
-        message += '\n'
-    return message
-
-
-def error_message(title, message):
-    """Print out a formatted error message and return."""
-    framed_message([title, message])
-    print(get_trace())
+class Token:
+    """The Token class defines various token types."""
+    opening_parenthesis = '('
+    closing_parenthesis = ')'
+    function = 'function'
+    variable = 'variable'
+    value = 'value'
+    infix_operator = 'infix_op'
+    prefix_operator = 'prefix_op'
+    postfix_operator = 'postfix_op'
 
 
 class Quantity:
@@ -308,16 +240,71 @@ class Quantity:
         return Quantity(value=math.atan2(self.value, other.value))
 
 
-class Token:
-    """The Token class defines various token types."""
-    opening_parenthesis = '('
-    closing_parenthesis = ')'
-    function = 'function'
-    variable = 'variable'
-    value = 'value'
-    infix_operator = 'infix_op'
-    prefix_operator = 'prefix_op'
-    postfix_operator = 'postfix_op'
+def framed_message(messages, width=79):
+    """Print out a formatted message which fits in a specified width."""
+    # format messages
+    if not isinstance(messages, list):
+        messages = [messages]
+    for i in range(len(messages)):
+        if not isinstance(messages[i], tuple):
+            messages[i] = ('', messages[i])
+    # store the message width
+    max_header_width = max(len(x[0]) for x in messages)
+    width = max(width, max_header_width + 20 + 6)
+    # print the top frame after a blank line
+    print('')
+    print('*' * width)
+    print('*' + (' ' * (width - 2)) + '*')
+    # process each message
+    # *  Header: Text             *
+    for message in messages:
+        header = message[0]
+        # format text into broken lines
+        text = ''
+        for line in message[1].split('\n'):
+            text += textwrap.fill(
+                line,
+                width=width - 6 - len(header))
+            text += '\n'
+        # remove trailing newlines
+        while text and text[-1] == '\n':
+            text = text[:-1]
+        # break into a list
+        text = text.split('\n')
+        # process each line
+        for i in range(len(text)):
+            if i == 0:
+                line = '%s%s' % (header, text[i])
+            else:
+                line = '%s%s' % (' ' * len(header), text[i])
+            if len(line) < width - 6:
+                line += ' ' * (width - 6 - len(line))
+            print('*  %s  *' % (line))
+        print('*' + (' ' * (width - 2)) + '*')
+    # print the bottom frame
+    print('*' * width)
+
+
+def get_trace(omitted_frames=1):
+    """Return a compressed stack trace."""
+    last_file = ''
+    message = ''
+    for frame in inspect.stack()[omitted_frames:]:
+        this_file = frame[1].split('/')[-1]
+        if this_file != last_file:
+            message += this_file + ':'
+            last_file = this_file
+        else:
+            message += ' ' * len(last_file) + ' '
+        message += frame[3] + ':' + str(frame[2])
+        message += '\n'
+    return message
+
+
+def error_message(title, message):
+    """Print out a formatted error message and return."""
+    framed_message([title, message])
+    print(get_trace())
 
 
 # rules for implicit multiplication
@@ -569,16 +556,14 @@ def add_implicit_multiplication(tokens):
 def parse_to_tokens(equation):
     """Take the equation and parse it into tokens."""
     if debug_output:
-        print('\nParsing equation "%s"' % (equation))
+        print('\nParsing equation "%s"' % equation)
     # set to true if a value immediately preceded the current character
     parsed_values = []
-    value_before = False
-    #found_operator = False
     while equation:
         # print '-->', equation, parsed_values
         # trim equation if necessary
-        if equation != equation.strip():
-            equation = equation.strip()
+        if equation and equation[0].isspace():
+            equation = equation.lstrip()
             continue
         # see if a value immediately preceeded this position
         if not parsed_values:
@@ -928,10 +913,6 @@ def create_natural_unit_map():
         natural_unit_map[tuple(value.units)] = (key, natural_unit[key], value)
 
 
-import_units()
-create_natural_unit_map()
-
-
 def matching_units(value1, value2):
     """Return True if the units of the two values match."""
     if type(value1) is str:
@@ -1067,6 +1048,11 @@ def evaluate(equation, units=None):
         return to_string(result), units
     # evaluate in any units
     return to_string(+calculate(equation))
+
+
+find_math_functions()
+import_units()
+create_natural_unit_map()
 
 
 if __name__ == "__main__":
