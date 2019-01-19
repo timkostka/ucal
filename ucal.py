@@ -1019,6 +1019,7 @@ def process_user_equation(equation):
                 if not result.is_integer():
                     return 'only integers can be written as hex'
                 result = hex(int(result.value.to_integral_value()))
+                result = '0x' + result[2:].upper()
                 unit_def['Ans'] = result
                 return result
             elif (possible_units.lower() == 'bin' or
