@@ -1004,7 +1004,7 @@ def process_user_equation(equation):
     """Return the result of the equation which may include unit specifiers."""
     # set high working precision
     decimal.getcontext().prec = working_precision_digits
-    # set to True when we find a result
+    # set to True when we find an intepreted result
     interpreted_result = False
     # see if the equation is written in the form "x in y"
     separators = ['to', 'as', 'in']
@@ -1028,8 +1028,9 @@ def process_user_equation(equation):
                 result = bin(int(result.value.to_integral_value()))
                 unit_def['Ans'] = result
                 return result
-            target_units = calculate(possible_units)
-            assert result.matches_units(target_units)
+            units_check = calculate(possible_units)
+            assert result.matches_units(units_check)
+            target_units = possible_units
             interpreted_result = True
             break
         except (AssertionError, QuantityError, ParserError):

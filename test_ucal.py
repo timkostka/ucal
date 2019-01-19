@@ -23,7 +23,7 @@ class TestSyntax(unittest.TestCase):
             arguments = [*args]
             arguments.extend('%s=%s' % (x, y) for x, y in kwargs.items())
             self.fail('%s(%s) raised an exception.'
-                      % (callable.__name__, ', '.join(arguments)))
+                      % (function.__name__, ', '.join(arguments)))
         return True
 
     def test_value_comprehension(self):
@@ -43,18 +43,18 @@ class TestSyntax(unittest.TestCase):
     def test_arithmetic(self):
         """Test basic arithmetic operations."""
         self.assertEqual(ucal.evaluate('1+2'), '3')
+        self.assertEqual(ucal.evaluate('1-2'), '-1')
         self.assertEqual(ucal.evaluate('3*4'), '12')
         self.assertEqual(ucal.evaluate('8/2'), '4')
-        self.assertEqual(ucal.evaluate('5!'), '120')
 
-    def test_decimal(self):
+    def test_decimal_comprehension(self):
         """Test decimal number comprehension."""
         self.assertEqual(ucal.evaluate('0'), '0')
         self.assertEqual(ucal.evaluate('0123'), '123')
         self.assertEqual(ucal.evaluate('+1e555'), '1e555')
         self.assertEqual(ucal.evaluate('1e-67'), '1e-67')
 
-    def test_binary(self):
+    def test_binary_comprehension(self):
         """Test binary number comprehension."""
         self.assertEqual(ucal.evaluate('0B0'), '0')
         self.assertEqual(ucal.evaluate('0b0'), '0')
@@ -62,7 +62,7 @@ class TestSyntax(unittest.TestCase):
         self.assertEqual(ucal.evaluate('0b1111'), '15')
         self.assertRaises(ucal.ParserError, ucal.evaluate, '0b')
 
-    def test_hexadecimal(self):
+    def test_hexadecimal_comprehension(self):
         """Test hexadecimal number comprehension."""
         self.assertEqual(ucal.evaluate('0x0'), '0')
         self.assertEqual(ucal.evaluate('0X0'), '0')
@@ -73,11 +73,22 @@ class TestSyntax(unittest.TestCase):
 
     def test_hexadecimal_conversion(self):
         """Test conversion to hexademical numbers."""
-        self.assertEqual(ucal.evaluate('67 in hex'), '0x43')
+        self.assertEqual(ucal.process_user_equation('67 in hex'), '0x43')
+        self.assertEqual(ucal.process_user_equation('123 in hex'), '0x7B')
 
     def test_binary_conversion(self):
         """Test conversion to hexademical numbers."""
-        self.assertEqual(ucal.evaluate('67 in bin'), '0b1000011')
+        self.assertEqual(ucal.process_user_equation('67 in bin'), '0b1000011')
+
+    def test_target_units(self):
+        """Test conversion to specified units."""
+        self.assertEqual(ucal.process_user_equation('1m to mm'), '1000 mm')
+        self.assertEqual(ucal.process_user_equation('1m as mm'), '1000 mm')
+        self.assertEqual(ucal.process_user_equation('1m in mm'), '1000 mm')
+
+    def test_target_units_fallback(self):
+        """Test fallback conversion if target units are invalid."""
+        self.assertEqual(ucal.process_user_equation('1 in kg'), '0.0254 kg m')
 
     def test_factorial(self):
         """Test the factorial postfix operator."""
@@ -132,4 +143,4 @@ class TestSyntax(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    unittest.main(verbosity=2)
+    unittest.main()
