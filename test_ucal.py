@@ -71,6 +71,14 @@ class TestSyntax(unittest.TestCase):
         self.assertRaises(ucal.ParserError, ucal.evaluate, '0x')
         self.assertRaises(ucal.ParserError, ucal.evaluate, '0xAG')
 
+    def test_hexadecimal_conversion(self):
+        """Test conversion to hexademical numbers."""
+        self.assertEqual(ucal.evaluate('67 in hex'), '0x43')
+
+    def test_binary_conversion(self):
+        """Test conversion to hexademical numbers."""
+        self.assertEqual(ucal.evaluate('67 in bin'), '0b1000011')
+
     def test_factorial(self):
         """Test the factorial postfix operator."""
         self.assertEqual(ucal.evaluate('0!'), '1')
