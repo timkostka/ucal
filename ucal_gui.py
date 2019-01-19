@@ -239,7 +239,7 @@ def run():
             # try to parse new value
             this_input = value[0]
             try:
-                this_answer = ucal.process_user_equation(this_input)
+                this_answer = ucal.interpret(this_input)
             except (ucal.ParserError, ucal.QuantityError) as e:
                 this_answer = e.args[0]
             except decimal.DecimalException:

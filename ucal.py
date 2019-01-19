@@ -1000,7 +1000,7 @@ def to_string(quantity, output_units=None, include_measure=False):
     return '%s%s' % (str(quantity), measure)
 
 
-def process_user_equation(equation):
+def interpret(equation):
     """Return the result of the equation which may include unit specifiers."""
     # set high working precision
     decimal.getcontext().prec = working_precision_digits

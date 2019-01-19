@@ -73,22 +73,22 @@ class TestSyntax(unittest.TestCase):
 
     def test_hexadecimal_conversion(self):
         """Test conversion to hexademical numbers."""
-        self.assertEqual(ucal.process_user_equation('67 in hex'), '0x43')
-        self.assertEqual(ucal.process_user_equation('123 in hex'), '0x7B')
+        self.assertEqual(ucal.interpret('67 in hex'), '0x43')
+        self.assertEqual(ucal.interpret('123 in hex'), '0x7B')
 
     def test_binary_conversion(self):
         """Test conversion to hexademical numbers."""
-        self.assertEqual(ucal.process_user_equation('67 in bin'), '0b1000011')
+        self.assertEqual(ucal.interpret('67 in bin'), '0b1000011')
 
     def test_target_units(self):
         """Test conversion to specified units."""
-        self.assertEqual(ucal.process_user_equation('1m to mm'), '1000 mm')
-        self.assertEqual(ucal.process_user_equation('1m as mm'), '1000 mm')
-        self.assertEqual(ucal.process_user_equation('1m in mm'), '1000 mm')
+        self.assertEqual(ucal.interpret('1m to mm'), '1000 mm')
+        self.assertEqual(ucal.interpret('1m as mm'), '1000 mm')
+        self.assertEqual(ucal.interpret('1m in mm'), '1000 mm')
 
     def test_target_units_fallback(self):
         """Test fallback conversion if target units are invalid."""
-        self.assertEqual(ucal.process_user_equation('1 in kg'), '0.0254 kg m')
+        self.assertEqual(ucal.interpret('1 in kg'), '0.0254 kg m')
 
     def test_factorial(self):
         """Test the factorial postfix operator."""
