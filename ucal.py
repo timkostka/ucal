@@ -422,16 +422,20 @@ starting_variable_characters = string.ascii_letters
 following_variable_characters = string.ascii_letters + string.digits
 
 
-# determine functions and how many arguments each of them take
-# functions['sqrt'] -> (Quantity.function_sqrt, arg_count)
-functions = dict()
-prefix = 'function_'
-names = inspect.getmembers(Quantity, predicate=inspect.isfunction)
-names = [x for x in names if x[0].startswith(prefix)]
-print('Adding %d functions.' % (len(names)))
-for f in names:
-    name = f[0][len(prefix):]
-    functions[f[0][len(prefix):]] = (len(inspect.getargspec(f[1])[0]), f[1])
+def find_math_functions():
+    """Return math functions defined in this file."""
+    global math_functions
+    # determine functions and how many arguments each of them take
+    # math_functions['sqrt'] -> (Quantity.function_sqrt, arg_count)
+    math_functions = dict()
+    prefix = 'function_'
+    names = inspect.getmembers(Quantity, predicate=inspect.isfunction)
+    names = [x for x in names if x[0].startswith(prefix)]
+    if debug_output:
+        print('Adding %d functions.' % (len(names)))
+    for f in names:
+        name = f[0][len(prefix):]
+        math_functions[name] = (len(inspect.getfullargspec(f[1])[0]), f[1])
 
 
 def parse_value_at_start(text):
