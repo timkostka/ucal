@@ -20,7 +20,7 @@ class TestSyntax(unittest.TestCase):
         except ucal.ParserError:
             passed = False
         if not passed:
-            arguments = [*args]
+            arguments = [x for x in args]
             arguments.extend('%s=%s' % (x, y) for x, y in kwargs.items())
             self.fail('%s(%s) raised an exception.'
                       % (function.__name__, ', '.join(arguments)))
