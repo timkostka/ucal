@@ -83,6 +83,7 @@ class TestSyntax(unittest.TestCase):
     def test_output_units(self):
         """Test automatic output conversions."""
         self.assertEqual(ucal.evaluate('1A*Ohm'), '1 V')
+        self.assertEqual(ucal.evaluate('1/s'), '1 Hz')
 
     def test_target_simple_units(self):
         """Test conversion to specified units."""

@@ -1071,7 +1071,9 @@ def evaluate(equation, units=None):
     return to_string(+calculate(equation))
 
 
+print('123')
 find_math_functions()
+print('456')
 import_units()
 create_natural_unit_map()
 
