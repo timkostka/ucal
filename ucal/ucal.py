@@ -5,7 +5,8 @@ Typically, this module is used from ucal_gui.py to perform calculations,
 however it can also be used as a standalone module.
 
 Usage:
->>> import ucal
+
+import ucal
 >>> ucal.evaluate("5km in mi")
 '3.10686 mi'
 >>> ucal.evaluate("sqrt(2 * g * 30ft) in fps")
@@ -23,18 +24,7 @@ import math
 import decimal
 import string
 
-import ucal_units
-
-# An expression is evaluated in the following manner
-# - First, the equation is tokenized
-#   - Starting from left to right,
-#     - values start with +-.0123456789
-#     - variables and function start with a letter
-#     - prefix operators can be +-
-#     - postfix operators are !
-#     - infix operators are +-/*%^
-#     - open parenthesis is (
-#     - close parenthesis is )
+from ucal import ucal_units
 
 ####################
 # START OF OPTIONS #
@@ -49,9 +39,6 @@ output_precision_digits = 16
 # if True, will replace non-infix % with (1/100)
 allow_percent = True
 
-# if True, show some timing information
-show_timings = False
-
 # if True, will show debug output
 debug_output = False
 
@@ -61,6 +48,8 @@ verify_unit_conversions = True
 ##################
 # END OF OPTIONS #
 ##################
+
+__all__ = ['evaluate', 'ParserError', 'interpret']
 
 
 class QuantityError(Exception):
@@ -1039,9 +1028,6 @@ def interpret(equation):
             break
         except (AssertionError, QuantityError, ParserError):
             pass
-    if result is None:
-        message = 'Unable to parse equation'
-        raise ParserError(message)  # 'Unrecognized function', message)
     # if we didn't find a result, calculate the entire equation
     if not interpreted_result:
         target_units = None
@@ -1080,7 +1066,6 @@ def evaluate(equation, units=None):
 find_math_functions()
 import_units()
 create_natural_unit_map()
-
 
 if __name__ == "__main__":
     pass

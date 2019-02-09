@@ -2,6 +2,9 @@
 
 The uCal module is a Python-based calculator which seamlessly integrates unit conversion.
 
+### Status
+[![Build Status](https://travis-ci.org/timkostka/ucal.png)](https://travis-ci.org/timkostka/ucal)
+
 
 ## Method of operation
 
@@ -63,7 +66,7 @@ The string of tokens is then checked for make sure the syntax makes sense.
 
 * Check for balanced parenthesis
 * Check prefix operators are followed by a quantity.
-* Check infix operators are preceeding and followed by a quantity.
-* Check postfix operators are preceeding by a quantity.
+* Check infix operators are preceeded and followed by a quantity.
+* Check postfix operators are preceeded by a quantity.
 * Check starting token is either a prefix operator or a quantity.
 * Check ending token is either a postfix operator or a quantity.

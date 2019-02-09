@@ -2,7 +2,8 @@
 A GUI implementation of the functionality within ucal.py.
 
 Usage:
->>> import ucal_gui
+
+import ucal_gui
 >>> ucal_gui.run()
 
 """
@@ -16,7 +17,6 @@ import decimal
 import PySimpleGUI as sg
 
 import ucal
-
 
 ####################
 # START OF OPTIONS #

@@ -8,6 +8,8 @@ import unittest
 
 import ucal
 
+print('Testing ucal at', ucal.__file__)
+
 
 class TestSyntax(unittest.TestCase):
     """Test for correct detection of various syntax error."""
