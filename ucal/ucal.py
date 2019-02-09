@@ -49,7 +49,9 @@ verify_unit_conversions = True
 # END OF OPTIONS #
 ##################
 
-__all__ = ['evaluate', 'ParserError', 'interpret']
+# define items to be imported with import *
+__all__ = ['evaluate', 'ParserError', 'interpret', 'infix_operators',
+           'QuantityError']
 
 
 class QuantityError(Exception):
