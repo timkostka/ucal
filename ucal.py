@@ -17,8 +17,6 @@ Usage:
 
 """
 
-import os
-import sys
 import inspect
 import textwrap
 import math
@@ -284,7 +282,7 @@ def framed_message(messages, width=79):
                 line = '%s%s' % (' ' * len(header), text[i])
             if len(line) < width - 6:
                 line += ' ' * (width - 6 - len(line))
-            print('*  %s  *' % (line))
+            print('*  %s  *' % line)
         print('*' + (' ' * (width - 2)) + '*')
     # print the bottom frame
     print('*' * width)
@@ -542,7 +540,6 @@ def add_implicit_multiplication(tokens):
     i = 0
     rules = implicit_multiplication_rules
     while i < len(tokens) - 1:
-        add_it = False
         if tokens[i][0] in rules and tokens[i + 1][0] in rules[tokens[i][0]]:
             if debug_output and not added_any:
                 print('Adding implicit parentheses:')
@@ -1008,6 +1005,8 @@ def interpret(equation):
     interpreted_result = False
     # see if the equation is written in the form "x in y"
     separators = ['to', 'as', 'in']
+    result = None
+    target_units = None
     for word in separators:
         word = ' ' + word + ' '
         if word not in equation:
@@ -1036,6 +1035,9 @@ def interpret(equation):
             break
         except (AssertionError, QuantityError, ParserError):
             pass
+    if result is None:
+        message = 'Unable to parse equation'
+        raise ParserError(message)  # 'Unrecognized function', message)
     # if we didn't find a result, calculate the entire equation
     if not interpreted_result:
         target_units = None
