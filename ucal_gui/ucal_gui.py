@@ -10,12 +10,12 @@ import ucal_gui
 
 
 import os
-import sys
 import ctypes
 import platform
 import decimal
 
 import PySimpleGUI as sg
+import pyperclip
 
 import ucal
 
@@ -42,10 +42,14 @@ history_width = 60 * 10
 # END OF OPTIONS #
 ##################
 
+# define items to be imported with import *
+__all__ = ['run']
+
 
 def set_clipboard_text(text):
     """Put the given text into the Windows clipboard."""
-    os.system('echo | set /p="' + text + '" | clip')
+    pyperclip.copy(text)
+    # os.system('echo | set /p="' + text + '" | clip')
 
 
 def show_units_gui(unit_names):
