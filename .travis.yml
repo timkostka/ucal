@@ -8,4 +8,4 @@ python:
 #install:
 #  - pip --version
 script:
-  - python tests/test_ucal.py
+  - PYTHONPATH=$PWD:$PYTHONPATH python tests/test_ucal.py
