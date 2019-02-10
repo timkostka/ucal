@@ -16,6 +16,8 @@ except ModuleNotFoundError:
     print('ERROR: ucal not found in path')
     exit(1)
 
+ucal.debug_output = True
+
 print('Script is at', __file__)
 print('Testing ucal at', ucal.__file__)
 
@@ -86,6 +88,14 @@ class TestSyntax(unittest.TestCase):
         self.assertEqual(ucal.evaluate('0xAbCdEf'), '11259375')
         self.assertRaises(ucal.ParserError, ucal.evaluate, '0x')
         self.assertRaises(ucal.ParserError, ucal.evaluate, '0xAG')
+
+    def test_hexadecimal_errors(self):
+        """Test hexadecimal number error detection."""
+        self.assertIn('only integers', ucal.interpret('1m in hex'))
+
+    def test_binary_errors(self):
+        """Test binary number error detection."""
+        self.assertIn('only integers', ucal.interpret('1m in bin'))
 
     def test_hexadecimal_conversion(self):
         """Test conversion to hexademical numbers."""
