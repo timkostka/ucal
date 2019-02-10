@@ -5,7 +5,9 @@ python:
   - "3.5"
   - "3.6"
   - "3.7"
-#install:
-#  - pip --version
+install:
+  - pip install --user codecov
 script:
   - python tests/test_ucal.py
+after_success:
+  - codecov
