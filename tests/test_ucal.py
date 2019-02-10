@@ -16,8 +16,8 @@ except ModuleNotFoundError:
     print('ERROR: ucal not found in path')
     exit(1)
 
-print('Script is at', __file__)
-print('Testing ucal at', ucal.__file__)
+print('Script is at', os.path.abspath(__file__))
+print('Testing ucal at', os.path.abspath(ucal.__file__))
 
 # ensure ucal is loaded from the correct place
 ucal_dir = os.path.dirname(os.path.dirname(os.path.abspath(ucal.__file__)))
