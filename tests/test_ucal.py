@@ -3,6 +3,9 @@ Perform unit tests on ucal.py.
 
 """
 
+import os
+print('cwd=%s' % os.getcwd())
+print('file=%s' % __file__)
 
 import unittest
 
