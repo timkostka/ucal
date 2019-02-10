@@ -4,8 +4,12 @@ Perform unit tests on ucal.py.
 """
 
 import os
+import glob
 print('cwd=%s' % os.getcwd())
 print('file=%s' % __file__)
+
+print('dir=%s' % glob.glob('*'))
+print('ucal/dir=%s' % glob.glob('ucal/*'))
 
 import unittest
 
