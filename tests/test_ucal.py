@@ -5,21 +5,24 @@ Perform unit tests on ucal.py.
 
 import os
 import sys
-import glob
-
-print('cwd=%s' % os.getcwd())
-print('file=%s' % __file__)
-print('dir=%s' % glob.glob('*'))
-print('ucal/dir=%s' % glob.glob('ucal/*'))
-print('path=%s' % sys.path)
-
-# sys.path.append('')
-
 import unittest
 
-from .. import ucal
+# add parent directory to path to ensure we test the correct ucal
+sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
+try:
+    import ucal
+except ModuleNotFoundError:
+    print('ERROR: ucal not found in path')
+    exit(1)
+
+print('Script is at', __file__)
 print('Testing ucal at', ucal.__file__)
+
+# ensure ucal is loaded from the correct place
+ucal_dir = os.path.dirname(os.path.dirname(os.path.abspath(ucal.__file__)))
+test_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+assert ucal_dir == test_dir
 
 
 class TestSyntax(unittest.TestCase):
