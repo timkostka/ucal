@@ -1,10 +1,30 @@
-# uCal
+# ucal
 
-The uCal module is a Python-based calculator which seamlessly integrates unit conversion.
+The ucal (unit calculator) module is a Python-based calculator which seamlessly integrates unit conversion.
 
-### Status
 [![Build Status](https://travis-ci.org/timkostka/ucal.png)](https://travis-ci.org/timkostka/ucal)
 
+### Getting started
+
+To install, run
+
+    pip install [--user] ucal
+
+The GUI can be run from the command line:
+
+    python -m ucal_gui
+
+In addition, ucal can be used from within Python as follows:
+
+    >>> import ucal
+    >>> ucal.interpret('5km in mi')
+    3.10685596118667 mi
+    >>> ucal.interpret('67 in hex')
+    0x43
+    >>> ucal.interpret('1m + 3ft')
+    1.9144 m
+
+---
 
 ## Method of operation
 
