@@ -18,11 +18,11 @@ In addition, ucal can be used from within Python as follows:
 
     >>> import ucal
     >>> ucal.interpret('5km in mi')
-    3.10685596118667 mi
+    '3.10685596118667 mi'
     >>> ucal.interpret('67 in hex')
-    0x43
+    '0x43'
     >>> ucal.interpret('1m + 3ft')
-    1.9144 m
+    '1.9144 m'
 
 ---
 
