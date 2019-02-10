@@ -16,8 +16,6 @@ except ModuleNotFoundError:
     print('ERROR: ucal not found in path')
     exit(1)
 
-ucal.debug_output = True
-
 print('Script is at', __file__)
 print('Testing ucal at', ucal.__file__)
 
