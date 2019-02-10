@@ -4,8 +4,8 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name='ucal',
-    version='0.3.0',
+    name="ucal",
+    version="0.3.8",
     author="Tim Kostka",
     author_email="kostka@gmail.com",
     description='A calculator with automatic unit conversions',
