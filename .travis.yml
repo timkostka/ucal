@@ -8,6 +8,6 @@ python:
 install:
   - pip install codecov
 script:
-  - python tests/test_ucal.py
+  - coverage run tests/test_ucal.py
 after_success:
   - codecov
