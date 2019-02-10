@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="ucal",
-    version="0.3.9",
+    version="0.3.11",
     author="Tim Kostka",
     author_email="kostka@gmail.com",
     description='A calculator with automatic unit conversions',
@@ -14,6 +14,7 @@ setuptools.setup(
     url="https://github.com/timkostka/ucal",
     packages=setuptools.find_packages(),
     package_data={'ucal_gui': ['*.ico']},
+    install_requires=['pyperclip', 'PySimpleGUI'],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
