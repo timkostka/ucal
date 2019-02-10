@@ -17,7 +17,7 @@ print('path=%s' % sys.path)
 
 import unittest
 
-import ucal
+from .. import ucal
 
 print('Testing ucal at', ucal.__file__)
 
