@@ -8,4 +8,4 @@ python:
 install:
   - pip --version
 script:
-  - python test_ucal.py
+  - python tests/test_ucal.py
