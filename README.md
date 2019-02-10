@@ -3,6 +3,7 @@
 The ucal (unit calculator) module is a Python-based calculator which seamlessly integrates unit conversion.
 
 [![Build Status](https://travis-ci.org/timkostka/ucal.png)](https://travis-ci.org/timkostka/ucal)
+[![codecov.io](https://codecov.io/github/timkostka/ucal/coverage.svg?branch=master)](https://codecov.io/github/timkostka/ucal)
 
 ### Getting started
 
