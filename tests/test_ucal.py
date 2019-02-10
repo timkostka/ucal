@@ -13,6 +13,7 @@ print('dir=%s' % glob.glob('*'))
 print('ucal/dir=%s' % glob.glob('ucal/*'))
 print('path=%s' % sys.path)
 
+sys.path.append('')
 
 import unittest
 
