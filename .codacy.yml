@@ -1,0 +1,4 @@
+exclude_paths:
+  - scripts/*
+remark-lint:
+ - list-item-indent: space
