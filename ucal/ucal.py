@@ -126,7 +126,7 @@ class Quantity:
         return 'Quantity(' + str(self) + ')'
 
     def __eq__(self, other):
-        if type(other) is Quantity:
+        if isinstance(other, Quantity):
             return self.value == other.value and self.units == other.units
         return self.value == other and self.is_unitless()
 
@@ -344,6 +344,9 @@ starting_variable_characters = string.ascii_letters
 
 # valid following characters for variables and functions
 following_variable_characters = string.ascii_letters + string.digits
+
+# hold dictionary mapping math function strings to functions
+math_functions = dict()
 
 
 def find_math_functions():
@@ -643,7 +646,7 @@ def evaluate_flat_tokens(tokens):
     # at this point, it should be a single value
     assert len(tokens) == 1
     assert tokens[0][0] == Token.value
-    assert type(tokens[0][1]) is Quantity
+    assert isinstance(tokens[0][1], Quantity)
     return tokens[0][1]
 
 
@@ -673,7 +676,7 @@ def evaluate_tokens(tokens):
                 opening_index = opening_index[:-1]
                 break
     value = evaluate_flat_tokens(tokens)
-    assert type(value) is Quantity
+    assert isinstance(value, Quantity)
     return value
 
 
@@ -847,9 +850,9 @@ def create_natural_unit_map():
 
 def matching_units(value1, value2):
     """Return True if the units of the two values match."""
-    if type(value1) is str:
+    if isinstance(value1, str):
         value1 = calculate(value1)
-    if type(value2) is str:
+    if isinstance(value2, str):
         value2 = calculate(value2)
     return value1.units == value2.units
 
@@ -896,7 +899,7 @@ def to_string(quantity, output_units=None, include_measure=False):
         if '.' in value_str:
             value_str = value_str.rstrip('0').rstrip('.')
         return "%s %s%s" % (value_str, output_units, measure)
-    elif type(output_units) is str:
+    elif isinstance(output_units, str):
         units_quantity = calculate(output_units)
         if matching_units(quantity, units_quantity):
             if debug_output:

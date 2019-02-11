@@ -225,7 +225,6 @@ def run():
             input_element.Update(new_text)
             input_element.TKEntry.select_range(0, 'end')
             input_element.TKEntry.icursor('end')
-            pass
         # if "exit" was entered, then exit
         if button == 'Calculate' and value[0].lower() == 'exit':
             button = 'Exit'
