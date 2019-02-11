@@ -161,7 +161,7 @@ class Quantity:
                         units=[0.0] * unit_count)
 
     def __pow__(self, other):
-        if other.units != [0.0] * unit_count:
+        if not other.is_unitless():
             raise QuantityError('Inconsistent units',
                                 'Values in the exponent must be unitless.',
                                 self)
@@ -182,7 +182,7 @@ class Quantity:
                 self.value == self.value.to_integral_value())
 
     def factorial(self):
-        if self.units != [0.0] * unit_count:
+        if not self.is_unitless():
             raise QuantityError('Inconsistent units', self)
         if self.value.to_integral_value() != self.value or self.value < 0:
             raise QuantityError('Invalid value', self)
@@ -200,7 +200,7 @@ class Quantity:
                         units=[x / 2.0 for x in self.units])
 
     def function_exp(self):
-        if self.units != [0.0] * unit_count:
+        if not self.is_unitless():
             raise QuantityError('Inconsistent units',
                                 'Exponent values must be unitless.',
                                 self)
@@ -212,7 +212,7 @@ class Quantity:
                         units=self.units)
 
     def function_ln(self):
-        if self.units != [0.0] * unit_count:
+        if not self.is_unitless():
             raise QuantityError('Inconsistent units', self)
         return Quantity(value=self.value.ln(),
                         units=self.units)
@@ -221,15 +221,15 @@ class Quantity:
         return self.function_ln()
 
     def function_log10(self):
-        if self.units != [0.0] * unit_count:
+        if not self.is_unitless():
             raise QuantityError('Inconsistent units', self)
         return Quantity(value=self.value.log10(),
                         units=self.units)
 
     def function_atan2(self, other):
-        if self.units != [0.0] * unit_count:
+        if not self.is_unitless():
             raise QuantityError('Inconsistent units', self, other)
-        if other.units != [0.0] * unit_count:
+        if not other.is_unitless():
             raise QuantityError('Inconsistent units', self, other)
         return Quantity(value=math.atan2(self.value, other.value))
 
