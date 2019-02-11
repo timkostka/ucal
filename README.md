@@ -5,6 +5,7 @@ The ucal (unit calculator) module is a Python-based calculator which seamlessly 
 [![PyPI version](https://badge.fury.io/py/ucal.svg)](https://badge.fury.io/py/ucal)
 [![Build Status](https://travis-ci.org/timkostka/ucal.svg)](https://travis-ci.org/timkostka/ucal)
 [![codecov.io](https://codecov.io/github/timkostka/ucal/coverage.svg?branch=master)](https://codecov.io/github/timkostka/ucal)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/d70ccd0c3af74cef9e92b27a4fac326b)](https://www.codacy.com/app/timkostka/ucal?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=timkostka/ucal&amp;utm_campaign=Badge_Grade)
 
 ## Getting started
 
