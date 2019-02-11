@@ -469,18 +469,20 @@ def add_implicit_multiplication(tokens):
     rules = implicit_multiplication_rules
     while i < len(tokens) - 1:
         if tokens[i][0] in rules and tokens[i + 1][0] in rules[tokens[i][0]]:
-            if debug_output and not added_any:
-                print('Adding implicit parentheses:')
-            added_any = True
+            if debug_output:
+                if not added_any:
+                    print('Adding implicit parentheses:')
+                    added_any = True
             if debug_output:
                 print('- adding implicit * between %s and %s'
                       % (tokens[i], tokens[i + 1]))
             tokens.insert(i + 1, ['infix_op', '*'])
         i += 1
-    if debug_output and added_any:
-        print('- we now have %d tokens' % len(tokens))
-        print('  ' + ' '.join(x[1] for x in tokens))
-        print('  ' + ' '.join('^' * len(x[1]) for x in tokens))
+    if debug_output:
+        if added_any:
+            print('- we now have %d tokens' % len(tokens))
+            print('  ' + ' '.join(x[1] for x in tokens))
+            print('  ' + ' '.join('^' * len(x[1]) for x in tokens))
 
 
 def parse_to_tokens(equation):
