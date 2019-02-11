@@ -131,6 +131,12 @@ class TestSyntax(unittest.TestCase):
         self.assertEqual(ucal.evaluate('5!'), '120')
         self.assertEqual(ucal.evaluate('18!'), '6402373705728000')
 
+    def test_factorial_error(self):
+        """Test invalid uses of the factorial postfix operator."""
+        self.assertRaises(ucal.QuantityError, ucal.evaluate, '(1m)!')
+        self.assertRaises(ucal.QuantityError, ucal.evaluate, '1.5!')
+        self.assertRaises(ucal.QuantityError, ucal.evaluate, '(-1)!')
+
     def test_percent(self):
         """Test percentage evaluation."""
         self.assertEqual(ucal.evaluate('100%'), '1')
@@ -181,28 +187,33 @@ class TestSyntax(unittest.TestCase):
     def test_function_exp(self):
         """Test exp function."""
         self.assertEqual(ucal.evaluate('exp(0)'), '1')
+        self.assertRaises(ucal.QuantityError, ucal.evaluate, 'exp(1m)')
 
-    def test_function_(self):
+    def test_function_abs(self):
         """Test abs function."""
         self.assertEqual(ucal.evaluate('abs(1)'), '1')
         self.assertEqual(ucal.evaluate('abs(-1)'), '1')
         self.assertEqual(ucal.evaluate('abs(0)'), '0')
+        self.assertEqual(ucal.evaluate('abs(1 m)'), '1 m')
 
     def test_function_ln(self):
         """Test  function."""
         self.assertEqual(ucal.evaluate('ln(exp(1))'), '1')
         self.assertEqual(ucal.evaluate('ln(1)'), '0')
+        self.assertRaises(ucal.QuantityError, ucal.evaluate, 'ln(1m)')
 
     def test_function_log(self):
         """Test  function."""
         self.assertEqual(ucal.evaluate('log(exp(1))'), '1')
         self.assertEqual(ucal.evaluate('log(1)'), '0')
+        self.assertRaises(ucal.QuantityError, ucal.evaluate, 'log(1m)')
 
     def test_function_log10(self):
         """Test  function."""
         self.assertEqual(ucal.evaluate('log10(1)'), '0')
         self.assertEqual(ucal.evaluate('log10(10)'), '1')
         self.assertEqual(ucal.evaluate('log10(100)'), '2')
+        self.assertRaises(ucal.QuantityError, ucal.evaluate, 'log10(1m)')
 
 
 if __name__ == '__main__':
