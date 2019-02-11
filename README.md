@@ -2,20 +2,21 @@
 
 The ucal (unit calculator) module is a Python-based calculator which seamlessly integrates unit conversion.
 
-[![Build Status](https://travis-ci.org/timkostka/ucal.png)](https://travis-ci.org/timkostka/ucal)
+[![PyPI version](https://badge.fury.io/py/ucal.svg)](https://badge.fury.io/py/ucal)
+[![Build Status](https://travis-ci.org/timkostka/ucal.svg)](https://travis-ci.org/timkostka/ucal)
 [![codecov.io](https://codecov.io/github/timkostka/ucal/coverage.svg?branch=master)](https://codecov.io/github/timkostka/ucal)
 
 ### Getting started
 
-To install, run
+The ucal package requires Python 3.4+ to use.  Install the package by running the following:
 
-    pip install [--user] ucal
+    pip install --user ucal
 
-The GUI can be run from the command line:
+Once installed, the GUI can be run from the command line.
 
     python -m ucal_gui
 
-In addition, ucal can be used from within Python as follows:
+In addition, ucal can be integrated into your own code as follows:
 
     >>> import ucal
     >>> ucal.interpret('5km in mi')
@@ -24,6 +25,8 @@ In addition, ucal can be used from within Python as follows:
     '0x43'
     >>> ucal.interpret('1m + 3ft')
     '1.9144 m'
+
+### Screenshots
 
 ---
 
