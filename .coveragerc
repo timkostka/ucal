@@ -3,3 +3,6 @@ exclude_lines =
     if __name__ == .__main__.:
     if debug_output:
     def __repr__
+[run]
+omit =
+    *tests/*
