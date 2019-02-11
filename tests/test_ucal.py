@@ -174,6 +174,36 @@ class TestSyntax(unittest.TestCase):
         """Test order of power/factorial evaluations."""
         self.assertEqual(ucal.evaluate('3^2!'), '9')
 
+    def test_function_sqrt(self):
+        """Test sqrt function."""
+        self.assertEqual(ucal.evaluate('sqrt(4)'), '2')
+
+    def test_function_exp(self):
+        """Test exp function."""
+        self.assertEqual(ucal.evaluate('exp(0)'), '1')
+
+    def test_function_(self):
+        """Test abs function."""
+        self.assertEqual(ucal.evaluate('abs(1)'), '1')
+        self.assertEqual(ucal.evaluate('abs(-1)'), '1')
+        self.assertEqual(ucal.evaluate('abs(0)'), '0')
+
+    def test_function_ln(self):
+        """Test  function."""
+        self.assertEqual(ucal.evaluate('ln(exp(1))'), '1')
+        self.assertEqual(ucal.evaluate('ln(1)'), '0')
+
+    def test_function_log(self):
+        """Test  function."""
+        self.assertEqual(ucal.evaluate('log(exp(1))'), '1')
+        self.assertEqual(ucal.evaluate('log(1)'), '0')
+
+    def test_function_log10(self):
+        """Test  function."""
+        self.assertEqual(ucal.evaluate('log10(1)'), '0')
+        self.assertEqual(ucal.evaluate('log10(10)'), '1')
+        self.assertEqual(ucal.evaluate('log10(100)'), '2')
+
 
 if __name__ == '__main__':
     unittest.main()
