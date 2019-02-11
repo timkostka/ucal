@@ -23,9 +23,27 @@ confirm_before_building = True
 # if True, must run and pass unit tests
 run_and_pass_unit_tests = True
 
+# if True, git diff must return no changes
+force_clean_git_diff = True
+
+# if True, will commit changes after uploading
+commit_after_uploading = True
+
+# if True, will upload package to PyPI after building
+upload_new_package = True
+
 ##################
 # END OF OPTIONS #
 ##################
+
+# ensure valid options configuration
+if commit_after_uploading and not force_clean_git_diff:
+    print('ERROR: invalid options')
+    print('if commit_after_uploading is True, force_clean_git_diff must be '
+          'True')
+if not increment_build_number:
+    print('ERROR: invalid options')
+    print('increment_build_number must be True')
 
 
 def get_package_directory():
@@ -66,6 +84,15 @@ if run_and_pass_unit_tests:
 # store the setup filename
 setup_filename = 'setup.py'
 assert os.path.isfile('setup.py')
+
+# ensure clean git diff
+if force_clean_git_diff:
+    print('\nRunning git diff')
+    result = os.system('git diff --exit-code')
+    if result != 0:
+        print('\nERROR: git diff shows uncommitted changes')
+        exit(1)
+    print('- No changes found')
 
 # read the current version
 with open(setup_filename, 'r') as f:
@@ -111,10 +138,25 @@ if result != 0:
     exit(1)
 
 # upload
-print('\nUploading')
-result = os.system('python -m twine upload --skip-existing dist/*')
-if result != 0:
-    print('ERROR: upload failed')
-    exit(1)
+if upload_new_package:
+    print('\nUploading')
+    result = os.system('python -m twine upload --skip-existing dist/*')
+    if result != 0:
+        print('ERROR: upload failed')
+        exit(1)
+
+if commit_after_uploading:
+    result = os.system('git add setup.py')
+    if result != 0:
+        print('ERROR: error during git add')
+        exit(1)
+    os.system('git commit -m "uploaded v%s PyPI package"' % new_version)
+    if result != 0:
+        print('ERROR: error during git commit')
+        exit(1)
+    os.system('git push')
+    if result != 0:
+        print('ERROR: error during git push')
+        exit(1)
 
 print('\nSuccess!')
