@@ -22,6 +22,7 @@ import inspect
 import math
 import decimal
 import string
+import ast
 
 from ucal import ucal_units
 
@@ -745,7 +746,7 @@ def interpret_percent_sign(tokens):
 def evaluate_value(text):
     """Evaluate the string value and return a Decimal."""
     if text[:2].lower() == '0x' or text[:2].lower() == '0b':
-        return decimal.Decimal(eval(text))
+        return decimal.Decimal(ast.literal_eval(text))
     return decimal.Decimal(text)
 
 
