@@ -197,19 +197,19 @@ class TestSyntax(unittest.TestCase):
         self.assertEqual(ucal.evaluate('abs(1 m)'), '1 m')
 
     def test_function_ln(self):
-        """Test  function."""
+        """Test ln function."""
         self.assertEqual(ucal.evaluate('ln(exp(1))'), '1')
         self.assertEqual(ucal.evaluate('ln(1)'), '0')
         self.assertRaises(ucal.QuantityError, ucal.evaluate, 'ln(1m)')
 
     def test_function_log(self):
-        """Test  function."""
+        """Test log function."""
         self.assertEqual(ucal.evaluate('log(exp(1))'), '1')
         self.assertEqual(ucal.evaluate('log(1)'), '0')
         self.assertRaises(ucal.QuantityError, ucal.evaluate, 'log(1m)')
 
     def test_function_log10(self):
-        """Test  function."""
+        """Test log10 function."""
         self.assertEqual(ucal.evaluate('log10(1)'), '0')
         self.assertEqual(ucal.evaluate('log10(10)'), '1')
         self.assertEqual(ucal.evaluate('log10(100)'), '2')
