@@ -28,19 +28,13 @@ assert ucal_dir == test_dir
 class TestSyntax(unittest.TestCase):
     """Test for correct detection of various syntax error."""
 
-    def no_exception(self, function, *args, **kwargs):
-        """Return True if no exceptions are raised, else False."""
-        passed = True
-        try:
-            function(*args, **kwargs)
-        except ucal.ParserError:
-            passed = False
-        if not passed:
-            arguments = [x for x in args]
-            arguments.extend('%s=%s' % (x, y) for x, y in kwargs.items())
-            self.fail('%s(%s) raised an exception.'
-                      % (function.__name__, ', '.join(arguments)))
-        return True
+    def test_invalid_values(self):
+        """Test errors when parsing invalid values."""
+        self.assertRaises(ucal.ParserError, ucal.evaluate, '')
+        self.assertRaises(ucal.ParserError, ucal.evaluate, '+++1')
+        self.assertRaises(ucal.ParserError, ucal.evaluate, '+')
+        self.assertRaises(ucal.ParserError, ucal.evaluate, '.')
+        self.assertRaises(ucal.ParserError, ucal.evaluate, 'e10')
 
     def test_value_comprehension(self):
         """Test for valid value definitions."""
