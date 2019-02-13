@@ -28,6 +28,10 @@ assert ucal_dir == test_dir
 class TestSyntax(unittest.TestCase):
     """Test for correct detection of various syntax error."""
 
+    def test_invalid_equation(self):
+        """Test errors when parsing invalid equations."""
+        self.assertRaises(ucal.ParserError, ucal.evaluate, '%1')
+
     def test_invalid_values(self):
         """Test errors when parsing invalid values."""
         self.assertRaises(ucal.ParserError, ucal.evaluate, '')
@@ -36,7 +40,7 @@ class TestSyntax(unittest.TestCase):
         self.assertRaises(ucal.ParserError, ucal.evaluate, '.')
         self.assertRaises(ucal.ParserError, ucal.evaluate, 'e10')
 
-    def test_value_comprehension(self):
+    def test_basic_value_comprehension(self):
         """Test for valid value definitions."""
         self.assertEqual(ucal.evaluate('1'), '1')
         self.assertEqual(ucal.evaluate('123457890'), '123457890')
@@ -45,6 +49,10 @@ class TestSyntax(unittest.TestCase):
         self.assertEqual(ucal.evaluate('+1'), '1')
         self.assertEqual(ucal.evaluate('-1'), '-1')
         self.assertEqual(ucal.evaluate('1e3'), '1000')
+
+    def test_nested_prefix_comprehension(self):
+        """Test for valid value definitions."""
+        self.assertEqual(ucal.evaluate('1+-2'), '-1')
 
     def test_output_number_formatting(self):
         """Test for desired output format for numbers."""
@@ -177,6 +185,12 @@ class TestSyntax(unittest.TestCase):
     def test_evaluation_order_2(self):
         """Test order of power/factorial evaluations."""
         self.assertEqual(ucal.evaluate('3^2!'), '9')
+
+    def test_unrecognized_function(self):
+        """Test for an unrecognized function function."""
+        self.assertRaises(ucal.ParserError,
+                          ucal.evaluate,
+                          'thisIsUnrecognized(1)')
 
     def test_function_sqrt(self):
         """Test sqrt function."""
