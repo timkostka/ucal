@@ -44,17 +44,21 @@ class TestSyntax(unittest.TestCase):
 
     def test_value_comprehension(self):
         """Test for valid value definitions."""
-        self.no_exception(ucal.evaluate, '1')
-        self.no_exception(ucal.evaluate, '123457890')
-        self.no_exception(ucal.evaluate, '001')
-        self.no_exception(ucal.evaluate, '0.1234567890')
-        self.no_exception(ucal.evaluate, '.1')
-        self.no_exception(ucal.evaluate, '+1')
-        self.no_exception(ucal.evaluate, '-1')
-        self.no_exception(ucal.evaluate, '1e9')
-        self.no_exception(ucal.evaluate, '+1e+9')
-        self.no_exception(ucal.evaluate, '-1e-9')
-        self.no_exception(ucal.evaluate, '1E6')
+        self.assertEqual(ucal.evaluate('1'), '1')
+        self.assertEqual(ucal.evaluate('123457890'), '123457890')
+        self.assertEqual(ucal.evaluate('001'), '1')
+        self.assertEqual(ucal.evaluate('.1'), '0.1')
+        self.assertEqual(ucal.evaluate('+1'), '1')
+        self.assertEqual(ucal.evaluate('-1'), '-1')
+        self.assertEqual(ucal.evaluate('1e3'), '1000')
+
+    def test_output_number_formatting(self):
+        """Test for desired output format for numbers."""
+        self.assertEqual(ucal.evaluate('0.1234567890'), '0.123456789')
+        self.assertEqual(ucal.evaluate('1e9'), '1000000000')
+        self.assertEqual(ucal.evaluate('+1e+9'), '1000000000')
+        self.assertEqual(ucal.evaluate('-1e-3'), '-0.001')
+        self.assertEqual(ucal.evaluate('1E6'), '1000000')
 
     def test_arithmetic(self):
         """Test basic arithmetic operations."""
@@ -167,10 +171,10 @@ class TestSyntax(unittest.TestCase):
 
     def test_implicit_multiplication(self):
         """Test for valid implicit multiplication."""
-        self.no_exception(ucal.evaluate, '1 m')
-        self.no_exception(ucal.evaluate, 'm m')
-        self.no_exception(ucal.evaluate, '(1) m')
-        self.no_exception(ucal.evaluate, '(1)(1)')
+        self.assertEqual(ucal.evaluate('1 m'), '1 m')
+        self.assertEqual(ucal.evaluate('m m'), '1 m^2')
+        self.assertEqual(ucal.evaluate('(1) m'), '1 m')
+        self.assertEqual(ucal.evaluate('(1)(1)'), '1')
 
     def test_power_evaluation_order(self):
         """Test order of power evaluation."""
