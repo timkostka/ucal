@@ -23,6 +23,7 @@ import math
 import decimal
 import string
 import ast
+import re
 
 from ucal import ucal_units
 
@@ -345,6 +346,20 @@ starting_variable_characters = string.ascii_letters
 # valid following characters for variables and functions
 following_variable_characters = string.ascii_letters + string.digits
 
+# hold valid number patterns
+valid_number_patterns = []
+# hexademical
+valid_number_patterns.append(r'[+-]?0[xX][0-9a-fA-F]+')
+# binary
+valid_number_patterns.append(r'[+-]?0[bB][01]+')
+# number with digit before decimal
+valid_number_patterns.append(r'[+-]?[0-9]+\.?[0-9]*(?:[eE][-+]?[0-9]+)?')
+# number with digit after decimal
+valid_number_patterns.append(r'[+-]?[0-9]*\.?[0-9]+(?:[eE][-+]?[0-9]+)?')
+
+# compile number patterns
+valid_number_regex = [re.compile(x) for x in valid_number_patterns]
+
 # hold dictionary mapping math function strings to functions
 math_functions = dict()
 
@@ -367,76 +382,12 @@ def find_math_functions():
 
 def parse_value_at_start(text):
     """Return the string of the value at the start, or None if not found."""
-    # parse hexadecimal number
-    if len(text) > 2 and text[:2].lower() == '0x':
-        i = 2
-        while len(text) > i and text[i] in string.hexdigits:
-            i += 1
-        if i > 2:
-            return text[:i]
-    # parse binary number
-    if len(text) > 2 and text[:2].lower() == '0b':
-        i = 2
-        while len(text) > i and text[i] in '01':
-            i += 1
-        if i > 2:
-            return text[:i]
-    # skip sign if present
-    i = 0
-    if i >= len(text):
-        return None
-    if text[i] in '-+':
-        i += 1
-        if i >= len(text):
-            return None
-    # get digits before decimal point, if any
-    found_digit = False
-    while text[i].isdigit():
-        found_digit = True
-        i += 1
-        if i >= len(text):
-            return text[:i]
-    # skip decimal point if present
-    if text[i] == '.':
-        i += 1
-        if i >= len(text):
-            if found_digit:
-                return text[:i]
-            else:
-                return None
-    # get digits after decimal point if any
-    while text[i].isdigit():
-        found_digit = True
-        i += 1
-        if i >= len(text):
-            if found_digit:
-                return text[:i]
-            else:
-                return None
-    # if no value found so far, we're done
-    if not found_digit:
-        return None
-    # try to parse an exponent
-    if text[i].lower() != 'e':
-        return text[:i]
-    start_index = i
-    i += 1
-    if i >= len(text):
-        return text[:start_index]
-    # parse sign if any
-    if text[i] in '+-':
-        i += 1
-        if i >= len(text):
-            return text[:start_index]
-    # parse digits
-    found_digit = False
-    while i < len(text) and text[i].isdigit():
-        found_digit = True
-        i += 1
-    if found_digit:
-        return text[:i]
-    else:
-        return text[:start_index]
+    for pattern in valid_number_regex:
+        match = pattern.match(text)
+        if match:
+            assert text.startswith(match.group(0))
+            return match.group(0)
+    return None
 
 
 def parse_variable_at_start(text):
