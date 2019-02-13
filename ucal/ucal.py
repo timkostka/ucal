@@ -395,10 +395,7 @@ def parse_value_at_start(text):
         found_digit = True
         i += 1
         if i >= len(text):
-            if found_digit:
-                return text[:i]
-            else:
-                return None
+            return text[:i]
     # skip decimal point if present
     if text[i] == '.':
         i += 1
@@ -495,7 +492,8 @@ def parse_to_tokens(equation):
     # set to true if a value immediately preceded the current character
     parsed_values = []
     while equation:
-        # print '-->', equation, parsed_values
+        if debug_output:
+            print('-->', equation, parsed_values)
         # trim equation if necessary
         if equation and equation[0].isspace():
             equation = equation.lstrip()
@@ -520,18 +518,6 @@ def parse_to_tokens(equation):
             parsed_values.append([Token.closing_parenthesis, ')'])
             equation = equation[1:]
             continue
-        # look for prefix operators if value was not immediately preceeding
-        if not value_before:
-            found_operator = False
-            for operator in prefix_operators.keys():
-                if equation.startswith(operator):
-                    found_operator = True
-                    parsed_values.append([Token.prefix_operator,
-                                          operator])
-                    equation = equation[len(operator):]
-                    break
-            if found_operator:
-                continue
         # look for infix operator if value was preceeding
         if value_before:
             found_operator = False
@@ -539,18 +525,6 @@ def parse_to_tokens(equation):
                 if equation.startswith(operator):
                     found_operator = True
                     parsed_values.append([Token.infix_operator,
-                                          operator])
-                    equation = equation[len(operator):]
-                    break
-            if found_operator:
-                continue
-        # look for postfix operator if value was preceeding
-        if value_before:
-            found_operator = False
-            for operator in postfix_operators.keys():
-                if equation.startswith(operator):
-                    found_operator = True
-                    parsed_values.append([Token.postfix_operator,
                                           operator])
                     equation = equation[len(operator):]
                     break
@@ -571,10 +545,33 @@ def parse_to_tokens(equation):
             parsed_values.append([Token.value, result])
             equation = equation[len(result):]
             continue
+        # look for prefix operators if value was not immediately preceeding
+        if not value_before:
+            found_operator = False
+            for operator in prefix_operators.keys():
+                if equation.startswith(operator):
+                    found_operator = True
+                    parsed_values.append([Token.prefix_operator,
+                                          operator])
+                    equation = equation[len(operator):]
+                    break
+            if found_operator:
+                continue
+        # look for postfix operator if value was preceeding
+        if value_before:
+            found_operator = False
+            for operator in postfix_operators.keys():
+                if equation.startswith(operator):
+                    found_operator = True
+                    parsed_values.append([Token.postfix_operator,
+                                          operator])
+                    equation = equation[len(operator):]
+                    break
+            if found_operator:
+                continue
         # we don't know what to do here
         message = 'Symbol "%s" is not recognized' % equation[0]
         raise ParserError(message, equation)
-        # raise ParserError('Unrecognized symbol', equation)
     if debug_output:
         print('- found %d tokens' % (len(parsed_values)))
         print('- ' + ' '.join(x[1] for x in parsed_values))
