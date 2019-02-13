@@ -219,6 +219,19 @@ class TestSyntax(unittest.TestCase):
         self.assertEqual(ucal.evaluate('log10(100)'), '2')
         self.assertRaises(ucal.QuantityError, ucal.evaluate, 'log10(1m)')
 
+    def test_mod(self):
+        """Test __mod__ function."""
+        self.assertEqual(ucal.evaluate('1 % 7'), '1')
+        self.assertEqual(ucal.evaluate('7 % 1'), '0')
+        self.assertEqual(ucal.evaluate('4 % 2.5'), '1.5')
+        self.assertRaises(ucal.QuantityError, ucal.evaluate, '(1m) % 2')
+
+    def test_pow(self):
+        """Test __pow__ function."""
+        self.assertEqual(ucal.evaluate('1 ^ 7'), '1')
+        self.assertEqual(ucal.evaluate('2 ^ 5'), '32')
+        self.assertRaises(ucal.QuantityError, ucal.evaluate, '1 ^ (1m)')
+
 
 if __name__ == '__main__':
     unittest.main()
