@@ -38,6 +38,33 @@ class TestSyntax(unittest.TestCase):
         """Test errors when parsing invalid equations."""
         self.assertRaises(ucal.ParserError, ucal.evaluate, '%1')
 
+    def test_quantity_equality(self):
+        """Test Quantity.__eq__ function."""
+        self.assertEqual(ucal.ucal.calculate('1m'),
+                         ucal.ucal.calculate('1m'))
+
+    def test_quantity_addition(self):
+        """Test for proper Quantity.__add__ functionality."""
+        x = ucal.ucal.calculate('1m')
+        self.assertEqual(str(x + x), '2 m')
+
+    def test_quantity_subtraction(self):
+        """Test for proper Quantity.__sub__ functionality."""
+        x = ucal.ucal.calculate('1m')
+        self.assertEqual(str(x - x), '0 m')
+
+    def test_quantity_addition_error(self):
+        """Test for proper Quantity.__add__ error checks."""
+        x = ucal.ucal.calculate('1m')
+        y = ucal.ucal.calculate('0')
+        self.assertRaises(ucal.QuantityError, x.__add__, y)
+
+    def test_quantity_subtraction_error(self):
+        """Test for proper Quantity.__sub__ error checks."""
+        x = ucal.ucal.calculate('1m')
+        y = ucal.ucal.calculate('0')
+        self.assertRaises(ucal.QuantityError, x.__sub__, y)
+
     def test_invalid_values(self):
         """Test errors when parsing invalid values."""
         self.assertRaises(ucal.ParserError, ucal.evaluate, '')
@@ -76,6 +103,7 @@ class TestSyntax(unittest.TestCase):
         self.assertEqual(ucal.evaluate('1-2'), '-1')
         self.assertEqual(ucal.evaluate('3*4'), '12')
         self.assertEqual(ucal.evaluate('8/2'), '4')
+        self.assertEqual(ucal.evaluate('--1'), '1')
 
     def test_decimal_comprehension(self):
         """Test decimal number comprehension."""
