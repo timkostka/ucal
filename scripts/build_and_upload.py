@@ -104,17 +104,44 @@ if not match:
     exit(1)
 version = match.group(1)
 major, minor, build = [int(x) for x in version.split('.')]
-# increment version
-if increment_build_number:
-    build += 1
-if increment_minor_version:
-    minor += 1
-    build = 0
-if increment_major_version:
-    major += 1
-    minor = 0
-    build = 0
+
+# ask for new version
+print('Current version: v%s' % version)
+requested_version = input('\nNew version number (blank for automatic): ')
+
+# if requested version was input, check that it's valid
+if requested_version:
+    requestion_version_numbers = requested_version.split('.')
+    assert len(requestion_version_numbers) == 3
+    # check
+    assert all(str(int(x)) == x for x in requestion_version_numbers)
+    assert all(int(x) >= 0 for x in requestion_version_numbers)
+    new_major, new_minor, new_build = [int(x)
+                                       for x in requestion_version_numbers]
+    assert new_major >= major
+    if new_major == major:
+        assert new_minor >= minor
+        if new_minor == minor:
+            assert new_build > build
+    major = new_major
+    minor = new_minor
+    build = new_build
+else:
+    print('\nIncrementing version number automatically.')
+    # increment version
+    if increment_build_number:
+        build += 1
+    if increment_minor_version:
+        minor += 1
+        build = 0
+    if increment_major_version:
+        major += 1
+        minor = 0
+        build = 0
+
 new_version = '.'.join(str(x) for x in [major, minor, build])
+print('\nNew version: v%s' % new_version)
+
 # create new text
 new_text = text[:match.start(1)] + new_version + text[match.end(1):]
 
