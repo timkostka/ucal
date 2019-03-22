@@ -45,6 +45,8 @@ class TestSyntax(unittest.TestCase):
         self.assertRaises(ucal.ParserError, ucal.evaluate, '+')
         self.assertRaises(ucal.ParserError, ucal.evaluate, '.')
         self.assertRaises(ucal.ParserError, ucal.evaluate, 'e10')
+        self.assertRaises(ucal.ParserError, ucal.evaluate, '1ee10')
+        self.assertRaises(ucal.ParserError, ucal.evaluate, '1E+-1')
 
     def test_basic_value_comprehension(self):
         """Test for valid value definitions."""
