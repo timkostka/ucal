@@ -105,8 +105,6 @@ class Quantity:
                 upper_units.append(y)
             elif x == -1.0:
                 upper_units.append('%s^-1' % y)
-            elif x > 0:
-                upper_units.append('%s^%s' % (y, x))
             else:
                 upper_units.append('%s^%s' % (y, x))
         value_str = '0' if self.value == 0 else str(self.value)

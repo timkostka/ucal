@@ -28,6 +28,12 @@ assert ucal_dir == test_dir
 class TestSyntax(unittest.TestCase):
     """Test for correct detection of various syntax error."""
 
+    def test_string_conversion(self):
+        """Test errors when converting to a string."""
+        self.assertEqual(str(ucal.evaluate('1/m')), '1 m^-1')
+        self.assertEqual(str(ucal.evaluate('m^2')), '1 m^2')
+        self.assertEqual(str(ucal.evaluate('m^1.5')), '1 m^1.5')
+
     def test_invalid_equation(self):
         """Test errors when parsing invalid equations."""
         self.assertRaises(ucal.ParserError, ucal.evaluate, '%1')
