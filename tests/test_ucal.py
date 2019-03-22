@@ -277,6 +277,15 @@ class TestSyntax(unittest.TestCase):
         self.assertEqual(ucal.evaluate('2 ^ 5'), '32')
         self.assertRaises(ucal.QuantityError, ucal.evaluate, '1 ^ (1m)')
 
+    def test_get_measure(self):
+        """Test ucal.get_measure."""
+        self.assertEqual(ucal.ucal.to_string(ucal.ucal.calculate('1m'),
+                                             include_measure=True),
+                         '1 m [length]')
+        self.assertEqual(ucal.ucal.to_string(ucal.ucal.calculate('1'),
+                                             include_measure=True),
+                         '1')
+
 
 if __name__ == '__main__':
     unittest.main()
