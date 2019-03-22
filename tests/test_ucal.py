@@ -286,6 +286,11 @@ class TestSyntax(unittest.TestCase):
                                              include_measure=True),
                          '1')
 
+    def test_evaluate_to_units(self):
+        """Test ucal.get_measure."""
+        self.assertEqual(ucal.evaluate('1ft', units='ft'), ('1', 'ft'))
+        self.assertRaises(ucal.ParserError, ucal.evaluate, '1ft', units='s')
+
 
 if __name__ == '__main__':
     unittest.main()
