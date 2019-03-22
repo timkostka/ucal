@@ -37,9 +37,6 @@ working_precision_digits = 32
 # output precision in base-10 decimal units
 output_precision_digits = 16
 
-# if True, will replace non-infix % with (1/100)
-allow_percent = True
-
 # if True, will show debug output
 debug_output = False
 
@@ -665,9 +662,6 @@ def interpret_percent_sign(tokens):
     Interpret the % symbol as a percent sign or as an infix operator.
 
     """
-    # if we don't allow the percent sign, nothing to change
-    if not allow_percent:
-        return
     # the percent sign is allowed immediately following a number and must be
     # followed by an infix operator, or be the last token
     i = 1
