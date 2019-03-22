@@ -788,15 +788,6 @@ def create_natural_unit_map():
         natural_unit_map[tuple(value.units)] = (key, natural_unit[key], value)
 
 
-def matching_units(value1, value2):
-    """Return True if the units of the two values match."""
-    if isinstance(value1, str):
-        value1 = calculate(value1)
-    if isinstance(value2, str):
-        value2 = calculate(value2)
-    return value1.units == value2.units
-
-
 def get_measure(quantity):
     """
     Return the measure of the units of the given quantity, or None.
@@ -841,7 +832,7 @@ def to_string(quantity, output_units=None, include_measure=False):
         return "%s %s%s" % (value_str, output_units, measure)
     elif isinstance(output_units, str):
         units_quantity = calculate(output_units)
-        if matching_units(quantity, units_quantity):
+        if quantity.matches_units(units_quantity):
             if debug_output:
                 print('- found match to derived output units')
             quantity.value /= units_quantity.value
