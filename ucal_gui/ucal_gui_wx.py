@@ -157,6 +157,18 @@ class CalculatorWindow(BaseCalculatorWindow):
             # find another handler for this key
             event.Skip()
 
+    def event_button_hide_options_click(self, event):
+        self.panel_options.Hide()
+        self.menu_view_options.Check(False)
+        self.Layout()
+
+    def event_menu_file_view_options_selected(self, event):
+        if self.menu_view_options.IsChecked():
+            self.panel_options.Show()
+        else:
+            self.panel_options.Hide()
+        self.Layout()
+
     def event_text_ctrl_input_on_text_enter(self, event):
         self.calculate_input()
 
