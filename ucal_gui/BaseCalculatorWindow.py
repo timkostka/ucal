@@ -23,7 +23,7 @@ class BaseCalculatorWindow(wx.Frame):
             id=wx.ID_ANY,
             title=u"Unit Calculator",
             pos=wx.DefaultPosition,
-            size=wx.Size(453, 440),
+            size=wx.Size(444, 494),
             style=wx.DEFAULT_FRAME_STYLE
             | wx.CLIP_CHILDREN
             | wx.NO_FULL_REPAINT_ON_RESIZE
@@ -160,7 +160,7 @@ class BaseCalculatorWindow(wx.Frame):
         )
         self.text_ctrl_input.SetFont(
             wx.Font(
-                9,
+                12,
                 wx.FONTFAMILY_MODERN,
                 wx.FONTSTYLE_NORMAL,
                 wx.FONTWEIGHT_NORMAL,
@@ -226,6 +226,8 @@ class BaseCalculatorWindow(wx.Frame):
         self.status_bar = self.CreateStatusBar(
             1, wx.STB_DEFAULT_STYLE, wx.ID_ANY
         )
+        self.status_bar.Hide()
+
         self.m_menubar1 = wx.MenuBar(0)
         self.m_menu1 = wx.Menu()
         self.m_menuItem1 = wx.MenuItem(

@@ -124,8 +124,6 @@ class CalculatorWindow(BaseCalculatorWindow):
         #event.Skip()
 
     def calculate_input(self):
-        # reset history position
-        history_position = 0
         # try to parse new value
         this_input = self.text_ctrl_input.GetValue()
         if not this_input:
@@ -138,7 +136,8 @@ class CalculatorWindow(BaseCalculatorWindow):
             this_answer = 'Undefined'
         # add new value
         self.add_history(this_input, this_answer)
-        #self.scroll_to_bottom()
+        # delete input
+        self.text_ctrl_input.SetValue('')
 
     def add_history(self, input_text="Input", result_text="Result"):
         """Add an input and output to the window."""
