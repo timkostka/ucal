@@ -22,6 +22,12 @@ default_dpi = 96
 # DPI setting for this system
 system_dpi = default_dpi
 
+# history items
+history = []
+
+# index of selected history item (0 = last)
+history_index = None
+
 
 def find_file(filename):
     """Search and return the path to the given filename, or None."""
@@ -105,23 +111,46 @@ class CalculatorWindow(BaseCalculatorWindow):
         #event.Skip()
 
     def event_text_ctrl_on_char(self, event):
+        # handle up/down events on
         key = event.GetKeyCode()
-        if key == 13:
-            # enter key was pressed
-            self.calculate_input()
+        print('key %s pressed' % key)
+        global history
+        global history_index
+        print("history_index =", history_index)
+        if key == 315:
+            # up key pressed
+            #global history
+            #global history_index
+            if history:
+                if history_index is None:
+                    history_index = len(history) - 1
+                elif history_index > 0:
+                    history_index -= 1
+                self.text_ctrl_input.SetValue(history[history_index])
+                self.text_ctrl_input.SetSelection(-1, -1)
+            #event.Skip()
+        elif key == 317:
+            # down key pressed
+            if history:
+                if history_index < len(history) - 1:
+                    history_index += 1
+                elif history_index is not None:
+                    history_index = len(history) - 1
+                self.text_ctrl_input.SetValue(history[history_index])
+                self.text_ctrl_input.SetSelection(-1, -1)
+            #event.Skip()
         else:
             event.Skip()
 
-    def event_text_ctrl_input_enter(self, event):
-        event.Skip()
+    def event_text_ctrl_input_on_text_enter(self, event):
+        self.calculate_input()
+        #event.Skip()
 
     def event_button_calculate_click(self, event):
         self.calculate_input()
-        # event.Skip()
 
     def event_menu_file_exit_selected(self, event):
         self.Close()
-        #event.Skip()
 
     def calculate_input(self):
         # try to parse new value
@@ -141,6 +170,10 @@ class CalculatorWindow(BaseCalculatorWindow):
 
     def add_history(self, input_text="Input", result_text="Result"):
         """Add an input and output to the window."""
+        global history_index
+        history_index = None
+        global history
+        history.append(input_text)
         sizer_history = self.scrolled_window_history.GetSizer()
         # add the input element
         input_element = wx.StaticText(
@@ -218,6 +251,8 @@ class CalculatorWindow(BaseCalculatorWindow):
 
     def clear_history(self):
         """Clear the history list."""
+        global history
+        history = []
         sizer = self.scrolled_window_history.GetSizer()
         for i in reversed(range(1, sizer.GetItemCount())):
             sizer.Hide(i)
