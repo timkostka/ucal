@@ -7,6 +7,7 @@ import os
 import ctypes
 import platform
 import decimal
+import sys
 
 import wx
 
@@ -20,6 +21,19 @@ default_dpi = 96
 
 # DPI setting for this system
 system_dpi = default_dpi
+
+
+def find_file(filename):
+    """Search and return the path to the given filename, or None."""
+    directories = [".", os.path.dirname(__file__)]
+    directories.append(getattr(sys, "_MEIPASS", "."))
+    for this_dir in directories:
+        path = os.path.join(os.path.abspath(this_dir), filename)
+        if os.path.isfile(path):
+            print("Found file: %s" % path)
+            return path
+    print("Unable to find file %s" % filename)
+    return None
 
 
 def get_system_dpi():
@@ -52,6 +66,13 @@ class CalculatorWindow(BaseCalculatorWindow):
         self.SetDoubleBuffered(True)
         self.text_ctrl_input.SetFocus()
         self.text_ctrl_input.SetInsertionPoint(-1)
+
+        # set the program icon
+        icon_filename = find_file('ucal.ico')
+        if icon_filename:
+            self.SetIcon(wx.Icon(icon_filename))
+        else:
+            print('ERROR: could not find icon file')
 
         # delete last two items in history and save their styles
         #input_element, result_element = self.scrolled_window_history.GetChildren()
