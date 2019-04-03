@@ -45,6 +45,7 @@ def find_file(filename):
 def get_system_dpi():
     """Return the DPI currently in use."""
     import ctypes
+
     dc = ctypes.windll.user32.GetDC(0)
     dpi = ctypes.windll.gdi32.GetDeviceCaps(dc, 88)
     ctypes.windll.user32.ReleaseDC(0, dc)
@@ -61,46 +62,56 @@ def adjusted_size(size):
 
 
 class CalculatorWindow(BaseCalculatorWindow):
-
     def __init__(self, parent):
         super(CalculatorWindow, self).__init__(parent)
         new_size = adjusted_size(self.GetSize())
         if new_size != self.GetSize():
             self.SetSize(new_size)
         self.Centre()
-        #self.scrolled_window_history.SetDoubleBuffered(True)
+        # self.scrolled_window_history.SetDoubleBuffered(True)
         self.SetDoubleBuffered(True)
         self.text_ctrl_input.SetFocus()
         self.text_ctrl_input.SetInsertionPoint(-1)
 
         # set the program icon
-        icon_filename = find_file('ucal.ico')
+        icon_filename = find_file("ucal.ico")
         if icon_filename:
             self.SetIcon(wx.Icon(icon_filename))
         else:
-            print('ERROR: could not find icon file')
+            print("ERROR: could not find icon file")
 
         # delete last two items in history and save their styles
-        #input_element, result_element = self.scrolled_window_history.GetChildren()
-        #self.history_input_style = input_element.GetWindowStyle()
-        #self.history_input_font = input_element.GetFont()
-        #self.history_input_sizer_style = input_element.GetContainingSizer().GetWindowStyle()
-        #print(self.history_input_style, self.history_input_font, self.history_input_sizer_style)
-        #self.history_result_style = result_element.GetWindowStyle()
+        # input_element, result_element = self.scrolled_window_history.GetChildren()
+        # self.history_input_style = input_element.GetWindowStyle()
+        # self.history_input_font = input_element.GetFont()
+        # self.history_input_sizer_style = input_element.GetContainingSizer().GetWindowStyle()
+        # print(self.history_input_style, self.history_input_font, self.history_input_sizer_style)
+        # self.history_result_style = result_element.GetWindowStyle()
 
         self.clear_history()
-
 
     # Virtual event handlers, overide them in your derived class
     def event_on_size(self, event):
         event.Skip()
         return
         client_size = self.m_scrolledWindow1.GetClientSize()
-        print('\nclient_size =', client_size)
-        print('getscrollpos(H) =', self.m_scrolledWindow1.GetScrollPos(wx.HORIZONTAL))
-        print('getscrollpos(V) =', self.m_scrolledWindow1.GetScrollPos(wx.VERTICAL))
-        print('getscrollrange(H) =', self.m_scrolledWindow1.GetScrollRange(wx.HORIZONTAL))
-        print('getscrollrange(V) =', self.m_scrolledWindow1.GetScrollRange(wx.VERTICAL))
+        print("\nclient_size =", client_size)
+        print(
+            "getscrollpos(H) =",
+            self.m_scrolledWindow1.GetScrollPos(wx.HORIZONTAL),
+        )
+        print(
+            "getscrollpos(V) =",
+            self.m_scrolledWindow1.GetScrollPos(wx.VERTICAL),
+        )
+        print(
+            "getscrollrange(H) =",
+            self.m_scrolledWindow1.GetScrollRange(wx.HORIZONTAL),
+        )
+        print(
+            "getscrollrange(V) =",
+            self.m_scrolledWindow1.GetScrollRange(wx.VERTICAL),
+        )
         print(wx.SystemSettings.GetMetric(wx.SYS_VSCROLL_X))
         print(wx.SystemSettings.GetMetric(wx.SYS_HSCROLL_Y))
         event.Skip()
@@ -108,19 +119,16 @@ class CalculatorWindow(BaseCalculatorWindow):
     def event_button_hide_description_click(self, event):
         self.panel_description.Hide()
         self.Layout()
-        #event.Skip()
 
     def event_text_ctrl_on_char(self, event):
         # handle up/down events on
         key = event.GetKeyCode()
-        print('key %s pressed' % key)
+        print("key %s pressed" % key)
         global history
         global history_index
         print("history_index =", history_index)
         if key == 315:
             # up key pressed
-            #global history
-            #global history_index
             if history:
                 if history_index is None:
                     history_index = len(history) - 1
@@ -128,7 +136,6 @@ class CalculatorWindow(BaseCalculatorWindow):
                     history_index -= 1
                 self.text_ctrl_input.SetValue(history[history_index])
                 self.text_ctrl_input.SetSelection(-1, -1)
-            #event.Skip()
         elif key == 317:
             # down key pressed
             if history:
@@ -138,10 +145,13 @@ class CalculatorWindow(BaseCalculatorWindow):
                     history_index = len(history) - 1
                 self.text_ctrl_input.SetValue(history[history_index])
                 self.text_ctrl_input.SetSelection(-1, -1)
-            #event.Skip()
-        elif chr(key) in ucal.infix_operators and not self.text_ctrl_input.GetValue() and history:
+        elif (
+            chr(key) in ucal.infix_operators
+            and not self.text_ctrl_input.GetValue()
+            and history
+        ):
             # an infix operator was pressed and the current text is empty
-            self.text_ctrl_input.SetValue('(' + history[-1] + ')' + chr(key))
+            self.text_ctrl_input.SetValue("(" + history[-1] + ")" + chr(key))
             self.text_ctrl_input.SetInsertionPoint(-1)
         else:
             # find another handler for this key
@@ -149,7 +159,6 @@ class CalculatorWindow(BaseCalculatorWindow):
 
     def event_text_ctrl_input_on_text_enter(self, event):
         self.calculate_input()
-        #event.Skip()
 
     def event_button_calculate_click(self, event):
         self.calculate_input()
@@ -167,11 +176,11 @@ class CalculatorWindow(BaseCalculatorWindow):
         except (ucal.ParserError, ucal.QuantityError) as e:
             this_answer = e.args[0]
         except decimal.DecimalException:
-            this_answer = 'Undefined'
+            this_answer = "Undefined"
         # add new value
         self.add_history(this_input, this_answer)
         # delete input
-        self.text_ctrl_input.SetValue('')
+        self.text_ctrl_input.SetValue("")
 
     def add_history(self, input_text="Input", result_text="Result"):
         """Add an input and output to the window."""
@@ -221,7 +230,9 @@ class CalculatorWindow(BaseCalculatorWindow):
                 "Consolas",
             )
         )
-        sizer_history.Add(result_element, 0, wx.BOTTOM | wx.RIGHT | wx.EXPAND, 10)
+        sizer_history.Add(
+            result_element, 0, wx.BOTTOM | wx.RIGHT | wx.EXPAND, 10
+        )
         # refit the window
         self.Layout()
         height = self.scrolled_window_history.GetVirtualSize()[1]
@@ -237,22 +248,21 @@ class CalculatorWindow(BaseCalculatorWindow):
         event.Skip()
         return
         # set min height of label
-        print('\n')
+        print("\n")
         best_size = self.m_staticText1.GetBestSize()
-        print('best_size =', best_size)
+        print("best_size =", best_size)
         min_size = self.m_staticText1.GetMinSize()
-        print('min_size =', min_size)
+        print("min_size =", min_size)
         size = self.m_staticText1.GetSize()
-        print('size =', size)
+        print("size =", size)
         size = self.m_staticText1.GetBestHeight(size[0])
-        print('size =', size)
+        print("size =", size)
         GetMaxSize = self.m_staticText1.GetMaxSize()
-        print('GetMaxSize =', GetMaxSize)
+        print("GetMaxSize =", GetMaxSize)
         GetMaxClientSize = self.m_staticText1.GetMaxClientSize()
-        print('GetMaxClientSize =', GetMaxSize)
+        print("GetMaxClientSize =", GetMaxSize)
         self.panel_description.Fit()
         event.Skip()
-
 
     def clear_history(self):
         """Clear the history list."""
@@ -289,7 +299,7 @@ def run_gui():
     window.clear_history()
     history_count = 5
     for i in range(history_count):
-        window.add_history("History %d" % i, 'Result %d' % i)
+        window.add_history("History %d" % i, "Result %d" % i)
     # add sizer to scrolled window
     print(window.GetBestSize())
     # window.SetMinSize(window.GetBestSize())
