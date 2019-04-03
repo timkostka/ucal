@@ -139,7 +139,12 @@ class CalculatorWindow(BaseCalculatorWindow):
                 self.text_ctrl_input.SetValue(history[history_index])
                 self.text_ctrl_input.SetSelection(-1, -1)
             #event.Skip()
+        elif chr(key) in ucal.infix_operators and not self.text_ctrl_input.GetValue() and history:
+            # an infix operator was pressed and the current text is empty
+            self.text_ctrl_input.SetValue('(' + history[-1] + ')' + chr(key))
+            self.text_ctrl_input.SetInsertionPoint(-1)
         else:
+            # find another handler for this key
             event.Skip()
 
     def event_text_ctrl_input_on_text_enter(self, event):
