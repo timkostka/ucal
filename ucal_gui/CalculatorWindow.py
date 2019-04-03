@@ -15,10 +15,39 @@ import ucal
 from BaseCalculatorWindow import BaseCalculatorWindow
 
 
+# Windows default DPI
+default_dpi = 96
+
+# DPI setting for this system
+system_dpi = default_dpi
+
+
+def get_system_dpi():
+    """Return the DPI currently in use."""
+    import ctypes
+    dc = ctypes.windll.user32.GetDC(0)
+    dpi = ctypes.windll.gdi32.GetDeviceCaps(dc, 88)
+    ctypes.windll.user32.ReleaseDC(0, dc)
+    return dpi
+
+
+def adjusted_size(size):
+    """Return a size adjusted for the current DPI setting."""
+    if isinstance(size, int):
+        return int(size * system_dpi / 96.0 + 0.5)
+    if isinstance(size, wx.Size):
+        return wx.Size(adjusted_size(size[0]), adjusted_size(size[1]))
+    raise ValueError
+
+
 class CalculatorWindow(BaseCalculatorWindow):
 
     def __init__(self, parent):
         super(CalculatorWindow, self).__init__(parent)
+        new_size = adjusted_size(self.GetSize())
+        if new_size != self.GetSize():
+            self.SetSize(new_size)
+        self.Centre()
         #self.scrolled_window_history.SetDoubleBuffered(True)
         self.SetDoubleBuffered(True)
         self.text_ctrl_input.SetFocus()
@@ -187,8 +216,11 @@ def set_dpi_aware():
         ctypes.windll.shcore.SetProcessDpiAwareness(1)
 
 
-if __name__ == "__main__":
+def run_gui():
     set_dpi_aware()
+    # store the system DPI
+    global system_dpi
+    system_dpi = get_system_dpi()
     app = wx.App()
     window = CalculatorWindow(None)
     # hide the buttons
@@ -203,3 +235,7 @@ if __name__ == "__main__":
     # window.SetMinSize(window.GetBestSize())
     window.Show()
     app.MainLoop()
+
+
+if __name__ == "__main__":
+    run_gui()
