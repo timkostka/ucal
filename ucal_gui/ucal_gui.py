@@ -14,7 +14,7 @@ import ctypes
 import platform
 import decimal
 
-import wxpython
+import wx
 import PySimpleGUI as sg
 import pyperclip
 
