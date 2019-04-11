@@ -74,7 +74,7 @@ def store_configuration(config):
         with open(ini_file_path, "w") as f:
             config.write(f)
     except:
-        print('ERROR: error while saving INI file')
+        print("ERROR: error while saving INI file")
 
 
 def find_file(filename):
@@ -183,10 +183,13 @@ class CalculatorWindow(BaseCalculatorWindow):
         config.set(
             "Settings",
             "RememberWindowSettings",
-            "yes" if self.checkbox_remember_window_position.IsChecked() else "no",
+            "yes"
+            if self.checkbox_remember_window_position.IsChecked()
+            else "no",
         )
         config.set(
-            "Settings", "SaveHistory",
+            "Settings",
+            "SaveHistory",
             "yes" if self.checkbox_save_history.IsChecked() else "no",
         )
         config.set(
@@ -207,8 +210,8 @@ class CalculatorWindow(BaseCalculatorWindow):
             config.add_section("History")
             config.set("History", "Entries", str(len(history)))
             for i, (input_text, result_text) in enumerate(history, 1):
-                config.set('History', 'Input%d' % i, input_text)
-                config.set('History', 'Result%d' % i, input_text)
+                config.set("History", "Input%d" % i, input_text)
+                config.set("History", "Result%d" % i, input_text)
         return config
 
     # Virtual event handlers, overide them in your derived class
@@ -423,7 +426,7 @@ class CalculatorWindow(BaseCalculatorWindow):
 
     def event_key_down(self, event):
         """If Alt was pressed, show the menubar."""
-        print('Key %s was prssed.' % event.GetKeyCode())
+        print("Key %s was prssed." % event.GetKeyCode())
         event.Skip()
 
 
