@@ -23,7 +23,7 @@ class BaseCalculatorWindow(wx.Frame):
             id=wx.ID_ANY,
             title=u"Unit Calculator",
             pos=wx.DefaultPosition,
-            size=wx.Size(444, 494),
+            size=wx.Size(475, 494),
             style=wx.DEFAULT_FRAME_STYLE
             | wx.CLIP_CHILDREN
             | wx.NO_FULL_REPAINT_ON_RESIZE
@@ -44,17 +44,15 @@ class BaseCalculatorWindow(wx.Frame):
             wx.DefaultSize,
             wx.CLIP_CHILDREN | wx.TAB_TRAVERSAL,
         )
-        self.panel_description.Hide()
-
         sizerDescription = wx.BoxSizer(wx.HORIZONTAL)
 
         self.m_staticText1 = wx.StaticText(
             self.panel_description,
             wx.ID_ANY,
-            u"Unit Calculator is a calculator\nwith built in unit conversions.",
+            u'Unit Calculator performs calculations taking into account units.\nEnter "help" for general help and "units" for a list of defined units.',
             wx.DefaultPosition,
             wx.DefaultSize,
-            0,
+            wx.ST_ELLIPSIZE_END,
         )
         self.m_staticText1.Wrap(-1)
 
@@ -84,88 +82,6 @@ class BaseCalculatorWindow(wx.Frame):
         self.panel_description.Layout()
         sizerDescription.Fit(self.panel_description)
         bSizer1.Add(self.panel_description, 0, wx.EXPAND | wx.ALL, 0)
-
-        self.panel_options = wx.Panel(
-            self,
-            wx.ID_ANY,
-            wx.DefaultPosition,
-            wx.DefaultSize,
-            wx.TAB_TRAVERSAL,
-        )
-        self.panel_options.Hide()
-
-        sbSizer1 = wx.StaticBoxSizer(
-            wx.StaticBox(self.panel_options, wx.ID_ANY, u"Options"),
-            wx.VERTICAL,
-        )
-
-        self.m_checkBox1 = wx.CheckBox(
-            sbSizer1.GetStaticBox(),
-            wx.ID_ANY,
-            u"Save window size and position",
-            wx.DefaultPosition,
-            wx.DefaultSize,
-            0,
-        )
-        sbSizer1.Add(self.m_checkBox1, 0, wx.ALL, 5)
-
-        bSizer9 = wx.BoxSizer(wx.HORIZONTAL)
-
-        self.m_staticText21 = wx.StaticText(
-            sbSizer1.GetStaticBox(),
-            wx.ID_ANY,
-            u"Limit history to",
-            wx.DefaultPosition,
-            wx.DefaultSize,
-            0,
-        )
-        self.m_staticText21.Wrap(-1)
-
-        bSizer9.Add(self.m_staticText21, 0, wx.ALL, 5)
-
-        self.m_spinCtrl1 = wx.SpinCtrl(
-            sbSizer1.GetStaticBox(),
-            wx.ID_ANY,
-            wx.EmptyString,
-            wx.DefaultPosition,
-            wx.DefaultSize,
-            wx.SP_ARROW_KEYS,
-            0,
-            10000,
-            1000,
-        )
-        bSizer9.Add(self.m_spinCtrl1, 0, wx.ALL, 5)
-
-        self.m_staticText22 = wx.StaticText(
-            sbSizer1.GetStaticBox(),
-            wx.ID_ANY,
-            u"entries.",
-            wx.DefaultPosition,
-            wx.DefaultSize,
-            0,
-        )
-        self.m_staticText22.Wrap(-1)
-
-        bSizer9.Add(self.m_staticText22, 0, wx.ALL, 5)
-
-        bSizer9.Add((0, 0), 1, wx.EXPAND, 5)
-
-        sbSizer1.Add(bSizer9, 1, wx.EXPAND, 5)
-
-        self.button_hide_options = wx.Button(
-            sbSizer1.GetStaticBox(),
-            wx.ID_ANY,
-            u"Hide options",
-            wx.DefaultPosition,
-            wx.DefaultSize,
-            0,
-        )
-        sbSizer1.Add(self.button_hide_options, 0, wx.ALL, 5)
-
-        self.panel_options.SetSizer(sbSizer1)
-        self.panel_options.Layout()
-        sbSizer1.Fit(self.panel_options)
-        bSizer1.Add(self.panel_options, 0, wx.ALL | wx.EXPAND, 5)
 
         self.scrolled_window_history = wx.ScrolledWindow(
             self,
@@ -235,7 +151,7 @@ class BaseCalculatorWindow(wx.Frame):
         self.text_ctrl_input = wx.TextCtrl(
             self,
             wx.ID_ANY,
-            u"sqrt(2*g*30ft)",
+            wx.EmptyString,
             wx.DefaultPosition,
             wx.DefaultSize,
             0 | wx.WANTS_CHARS,
@@ -251,9 +167,114 @@ class BaseCalculatorWindow(wx.Frame):
             )
         )
 
-        bSizer4.Add(self.text_ctrl_input, 1, wx.ALL | wx.EXPAND, 5)
+        bSizer4.Add(self.text_ctrl_input, 1, wx.ALL | wx.EXPAND, 10)
 
         bSizer1.Add(bSizer4, 0, wx.EXPAND, 5)
+
+        self.panel_options = wx.Panel(
+            self,
+            wx.ID_ANY,
+            wx.DefaultPosition,
+            wx.DefaultSize,
+            wx.TAB_TRAVERSAL,
+        )
+        sbSizer1 = wx.StaticBoxSizer(
+            wx.StaticBox(self.panel_options, wx.ID_ANY, u"Options"),
+            wx.VERTICAL,
+        )
+
+        self.checkbox_remember_window_position = wx.CheckBox(
+            sbSizer1.GetStaticBox(),
+            wx.ID_ANY,
+            u"Save window size and position",
+            wx.DefaultPosition,
+            wx.DefaultSize,
+            0,
+        )
+        self.checkbox_remember_window_position.SetValue(True)
+        sbSizer1.Add(self.checkbox_remember_window_position, 0, wx.ALL, 5)
+
+        self.checkbox_save_history = wx.CheckBox(
+            sbSizer1.GetStaticBox(),
+            wx.ID_ANY,
+            u"Save history between sessions",
+            wx.DefaultPosition,
+            wx.DefaultSize,
+            0,
+        )
+        self.checkbox_save_history.SetValue(True)
+        sbSizer1.Add(self.checkbox_save_history, 0, wx.ALL, 5)
+
+        bSizer9 = wx.BoxSizer(wx.HORIZONTAL)
+
+        self.m_staticText21 = wx.StaticText(
+            sbSizer1.GetStaticBox(),
+            wx.ID_ANY,
+            u"Limit history to",
+            wx.DefaultPosition,
+            wx.DefaultSize,
+            0,
+        )
+        self.m_staticText21.Wrap(-1)
+
+        bSizer9.Add(self.m_staticText21, 0, wx.ALL, 5)
+
+        self.spin_ctrl_history_capacity = wx.SpinCtrl(
+            sbSizer1.GetStaticBox(),
+            wx.ID_ANY,
+            wx.EmptyString,
+            wx.DefaultPosition,
+            wx.DefaultSize,
+            wx.SP_ARROW_KEYS,
+            0,
+            10000,
+            1000,
+        )
+        bSizer9.Add(self.spin_ctrl_history_capacity, 0, wx.ALL, 5)
+
+        self.m_staticText22 = wx.StaticText(
+            sbSizer1.GetStaticBox(),
+            wx.ID_ANY,
+            u"entries.",
+            wx.DefaultPosition,
+            wx.DefaultSize,
+            0,
+        )
+        self.m_staticText22.Wrap(-1)
+
+        bSizer9.Add(self.m_staticText22, 0, wx.ALL, 5)
+
+        bSizer9.Add((0, 0), 1, wx.EXPAND, 5)
+
+        sbSizer1.Add(bSizer9, 1, wx.EXPAND, 5)
+
+        self.checkbox_hide_menu_bar = wx.CheckBox(
+            sbSizer1.GetStaticBox(),
+            wx.ID_ANY,
+            u"Hide menu bar until Alt is pressed",
+            wx.DefaultPosition,
+            wx.DefaultSize,
+            0,
+        )
+        self.checkbox_hide_menu_bar.SetValue(True)
+        self.checkbox_hide_menu_bar.Hide()
+
+        sbSizer1.Add(self.checkbox_hide_menu_bar, 0, wx.ALL, 5)
+
+        self.button_hide_options = wx.Button(
+            sbSizer1.GetStaticBox(),
+            wx.ID_ANY,
+            u"Hide options",
+            wx.DefaultPosition,
+            wx.DefaultSize,
+            0,
+        )
+        sbSizer1.Add(self.button_hide_options, 0, wx.ALL, 5)
+
+        self.panel_options.SetSizer(sbSizer1)
+        self.panel_options.Layout()
+        sbSizer1.Fit(self.panel_options)
+        bSizer1.Add(self.panel_options, 0, wx.ALL | wx.EXPAND, 0)
 
         self.panel_buttons = wx.Panel(
             self,
@@ -310,64 +331,77 @@ class BaseCalculatorWindow(wx.Frame):
         )
         self.status_bar.Hide()
 
-        self.m_menubar1 = wx.MenuBar(0)
-        self.m_menu1 = wx.Menu()
-        self.m_menuItem2 = wx.MenuItem(
-            self.m_menu1, wx.ID_ANY, u"&Clear", wx.EmptyString, wx.ITEM_NORMAL
+        self.menubar = wx.MenuBar(0)
+        self.menu_file = wx.Menu()
+        self.menu_file_clear = wx.MenuItem(
+            self.menu_file,
+            wx.ID_ANY,
+            u"&Clear",
+            wx.EmptyString,
+            wx.ITEM_NORMAL,
         )
-        self.m_menu1.Append(self.m_menuItem2)
+        self.menu_file.Append(self.menu_file_clear)
 
-        self.menu_view_options = wx.MenuItem(
-            self.m_menu1,
+        self.menu_file_view_options = wx.MenuItem(
+            self.menu_file,
             wx.ID_ANY,
             u"&View options",
             wx.EmptyString,
             wx.ITEM_CHECK,
         )
-        self.m_menu1.Append(self.menu_view_options)
+        self.menu_file.Append(self.menu_file_view_options)
 
-        self.m_menu1.AppendSeparator()
+        self.menu_file.AppendSeparator()
 
-        self.m_menuItem1 = wx.MenuItem(
-            self.m_menu1, wx.ID_EXIT, u"E&xit", wx.EmptyString, wx.ITEM_NORMAL
+        self.menu_file_exit = wx.MenuItem(
+            self.menu_file,
+            wx.ID_EXIT,
+            u"E&xit",
+            wx.EmptyString,
+            wx.ITEM_NORMAL,
         )
-        self.m_menu1.Append(self.m_menuItem1)
+        self.menu_file.Append(self.menu_file_exit)
 
-        self.m_menubar1.Append(self.m_menu1, u"&File")
+        self.menubar.Append(self.menu_file, u"&File")
 
-        self.SetMenuBar(self.m_menubar1)
+        self.SetMenuBar(self.menubar)
 
         self.Centre(wx.BOTH)
 
         # Connect Events
+        self.Bind(wx.EVT_CLOSE, self.event_close)
+        self.Bind(wx.EVT_KEY_DOWN, self.event_key_down)
         self.Bind(wx.EVT_SIZE, self.event_window_on_size)
         self.button_hide_description.Bind(
             wx.EVT_BUTTON, self.event_button_hide_description_click
-        )
-        self.button_hide_options.Bind(
-            wx.EVT_BUTTON, self.event_button_hide_options_click
         )
         self.text_ctrl_input.Bind(wx.EVT_CHAR, self.event_text_ctrl_on_char)
         self.text_ctrl_input.Bind(
             wx.EVT_TEXT_ENTER, self.event_text_ctrl_input_on_text_enter
         )
+        self.button_hide_options.Bind(
+            wx.EVT_BUTTON, self.event_button_hide_options_click
+        )
         self.button_calculate.Bind(
             wx.EVT_BUTTON, self.event_button_calculate_click
         )
+        self.button_exit.Bind(wx.EVT_BUTTON, self.event_button_exit_click)
+        self.menubar.Bind(wx.EVT_KILL_FOCUS, self.event_menubar_kill_focus)
+        self.menubar.Bind(wx.EVT_SET_FOCUS, self.event_menubar_set_focus)
         self.Bind(
             wx.EVT_MENU,
             self.event_menu_file_clear_selected,
-            id=self.m_menuItem2.GetId(),
+            id=self.menu_file_clear.GetId(),
         )
         self.Bind(
             wx.EVT_MENU,
             self.event_menu_file_view_options_selected,
-            id=self.menu_view_options.GetId(),
+            id=self.menu_file_view_options.GetId(),
         )
         self.Bind(
             wx.EVT_MENU,
             self.event_menu_file_exit_selected,
-            id=self.m_menuItem1.GetId(),
+            id=self.menu_file_exit.GetId(),
         )
 
     def __del__(self):
@@ -375,13 +409,16 @@ class BaseCalculatorWindow(wx.Frame):
 
         # Virtual event handlers, overide them in your derived class
 
+    def event_close(self, event):
+        event.Skip()
+
+    def event_key_down(self, event):
+        event.Skip()
+
     def event_window_on_size(self, event):
         event.Skip()
 
     def event_button_hide_description_click(self, event):
-        event.Skip()
-
-    def event_button_hide_options_click(self, event):
         event.Skip()
 
     def event_text_ctrl_on_char(self, event):
@@ -390,7 +427,19 @@ class BaseCalculatorWindow(wx.Frame):
     def event_text_ctrl_input_on_text_enter(self, event):
         event.Skip()
 
+    def event_button_hide_options_click(self, event):
+        event.Skip()
+
     def event_button_calculate_click(self, event):
+        event.Skip()
+
+    def event_button_exit_click(self, event):
+        event.Skip()
+
+    def event_menubar_kill_focus(self, event):
+        event.Skip()
+
+    def event_menubar_set_focus(self, event):
         event.Skip()
 
     def event_menu_file_clear_selected(self, event):
