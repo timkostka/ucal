@@ -21,6 +21,9 @@ from BaseCalculatorWindow import BaseCalculatorWindow
 # START OF OF OPTIONS #
 #######################
 
+# app ID for taskbar grouping
+app_id = "ucal"
+
 # Windows default DPI
 default_dpi = 96
 
@@ -441,17 +444,24 @@ def set_dpi_aware():
         ctypes.windll.shcore.SetProcessDpiAwareness(1)
 
 
-def run_gui():
-    set_dpi_aware()
+def run():
     # store the system DPI
     global system_dpi
     system_dpi = get_system_dpi()
+    # make the application DPI-aware
+    set_dpi_aware()
+    # set application ID
+    ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(app_id)
+    # initialize wx
     app = wx.App()
+    # create the window
     window = CalculatorWindow(None)
+    # set calculator window as top level window
+    app.SetTopWindow(window)
     # hide the buttons
-    window.panel_buttons.Hide()
-    window.Layout()
-    window.Refresh()
+    #window.panel_buttons.Hide()
+    #window.Layout()
+    #window.Refresh()
     window.clear_history()
     # apply configuration settings
     try:
@@ -467,4 +477,4 @@ def run_gui():
 
 
 if __name__ == "__main__":
-    run_gui()
+    run()
