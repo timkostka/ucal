@@ -15,8 +15,7 @@ import wx
 
 import ucal
 
-# from ucal_gui.BaseCalculatorWindow import BaseCalculatorWindow
-from BaseCalculatorWindow import BaseCalculatorWindow
+from ucal_gui.BaseCalculatorWindow import BaseCalculatorWindow
 
 
 #######################
