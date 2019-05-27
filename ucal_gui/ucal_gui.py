@@ -10,6 +10,7 @@ import decimal
 import sys
 import configparser
 
+import pyperclip
 import wx
 
 import ucal
@@ -275,6 +276,11 @@ class CalculatorWindow(BaseCalculatorWindow):
                     history_index = len(history) - 1
                 self.text_ctrl_input.SetValue(history[history_index][0])
                 self.text_ctrl_input.SetSelection(-1, -1)
+        elif key == 3:
+            # Ctrl+C pressed
+            selection = self.text_ctrl_input.GetSelection()
+            if history and selection[0] == selection[1]:
+                pyperclip.copy(history[-1][1])
         elif (
             chr(key) in ucal.infix_operators
             and not self.text_ctrl_input.GetValue()
@@ -433,7 +439,8 @@ class CalculatorWindow(BaseCalculatorWindow):
 
     def event_key_down(self, event):
         """If Alt was pressed, show the menubar."""
-        print("Key %s was prssed." % event.GetKeyCode())
+        code = event.GetKeyCode()
+        print("Key %s was pressed." % code)
         event.Skip()
 
     def event_window_set_focus(self, event):
