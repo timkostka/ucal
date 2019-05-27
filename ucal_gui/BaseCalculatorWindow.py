@@ -44,6 +44,8 @@ class BaseCalculatorWindow(wx.Frame):
             wx.DefaultSize,
             wx.CLIP_CHILDREN | wx.TAB_TRAVERSAL,
         )
+        self.panel_description.Hide()
+
         sizerDescription = wx.BoxSizer(wx.HORIZONTAL)
 
         self.m_staticText1 = wx.StaticText(
