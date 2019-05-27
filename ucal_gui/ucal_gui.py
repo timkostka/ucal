@@ -307,10 +307,14 @@ class CalculatorWindow(BaseCalculatorWindow):
         self.Layout()
 
     def event_text_ctrl_input_on_text_enter(self, event):
+        text = self.text_ctrl_input.GetValue()
+        if text == 'exit':
+            self.Close()
+            return
         self.calculate_input()
 
     def event_button_calculate_click(self, event):
-        self.calculate_input()
+        self.event_text_ctrl_input_on_text_enter(event)
 
     def event_menu_file_exit_selected(self, event):
         self.Close()
