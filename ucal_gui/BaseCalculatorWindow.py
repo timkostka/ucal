@@ -387,9 +387,6 @@ class BaseCalculatorWindow(wx.Frame):
         self.button_calculate.Bind(
             wx.EVT_BUTTON, self.event_button_calculate_click
         )
-        self.button_exit.Bind(wx.EVT_BUTTON, self.event_button_exit_click)
-        self.menubar.Bind(wx.EVT_KILL_FOCUS, self.event_menubar_kill_focus)
-        self.menubar.Bind(wx.EVT_SET_FOCUS, self.event_menubar_set_focus)
         self.Bind(
             wx.EVT_MENU,
             self.event_menu_file_clear_selected,
@@ -433,15 +430,6 @@ class BaseCalculatorWindow(wx.Frame):
         event.Skip()
 
     def event_button_calculate_click(self, event):
-        event.Skip()
-
-    def event_button_exit_click(self, event):
-        event.Skip()
-
-    def event_menubar_kill_focus(self, event):
-        event.Skip()
-
-    def event_menubar_set_focus(self, event):
         event.Skip()
 
     def event_menu_file_clear_selected(self, event):

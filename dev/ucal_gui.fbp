@@ -1354,7 +1354,6 @@
                                     <property name="window_extra_style"></property>
                                     <property name="window_name"></property>
                                     <property name="window_style"></property>
-                                    <event name="OnButtonClick">event_button_exit_click</event>
                                 </object>
                             </object>
                         </object>
@@ -1406,8 +1405,6 @@
                 <property name="window_extra_style"></property>
                 <property name="window_name"></property>
                 <property name="window_style"></property>
-                <event name="OnKillFocus">event_menubar_kill_focus</event>
-                <event name="OnSetFocus">event_menubar_set_focus</event>
                 <object class="wxMenu" expanded="1">
                     <property name="label">&amp;File</property>
                     <property name="name">menu_file</property>
