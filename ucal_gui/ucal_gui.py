@@ -77,7 +77,7 @@ def store_configuration(config):
         os.makedirs(os.path.dirname(ini_file_path), exist_ok=True)
         with open(ini_file_path, "w") as f:
             config.write(f)
-    except:
+    except OSError:
         print("ERROR: error while saving INI file")
 
 
@@ -96,8 +96,6 @@ def find_file(filename):
 
 def get_system_dpi():
     """Return the DPI currently in use."""
-    import ctypes
-
     dc = ctypes.windll.user32.GetDC(0)
     dpi = ctypes.windll.gdi32.GetDeviceCaps(dc, 88)
     ctypes.windll.user32.ReleaseDC(0, dc)
@@ -220,32 +218,6 @@ class CalculatorWindow(BaseCalculatorWindow):
                 config.set("History", "Input%d" % i, input_text)
                 config.set("History", "Result%d" % i, result_text)
         return config
-
-    # Virtual event handlers, overide them in your derived class
-    def event_on_size(self, event):
-        event.Skip()
-        return
-        client_size = self.m_scrolledWindow1.GetClientSize()
-        print("\nclient_size =", client_size)
-        print(
-            "getscrollpos(H) =",
-            self.m_scrolledWindow1.GetScrollPos(wx.HORIZONTAL),
-        )
-        print(
-            "getscrollpos(V) =",
-            self.m_scrolledWindow1.GetScrollPos(wx.VERTICAL),
-        )
-        print(
-            "getscrollrange(H) =",
-            self.m_scrolledWindow1.GetScrollRange(wx.HORIZONTAL),
-        )
-        print(
-            "getscrollrange(V) =",
-            self.m_scrolledWindow1.GetScrollRange(wx.VERTICAL),
-        )
-        print(wx.SystemSettings.GetMetric(wx.SYS_VSCROLL_X))
-        print(wx.SystemSettings.GetMetric(wx.SYS_HSCROLL_Y))
-        event.Skip()
 
     def event_button_hide_description_click(self, event):
         self.panel_description.Hide()
@@ -418,27 +390,6 @@ class CalculatorWindow(BaseCalculatorWindow):
         height = self.scrolled_window_history.GetVirtualSize()[1]
         self.scrolled_window_history.Scroll(0, height)
 
-    # Virtual event handlers, overide them in your derived class
-    def event_window_on_size(self, event):
-        event.Skip()
-        return
-        # set min height of label
-        print("\n")
-        best_size = self.m_staticText1.GetBestSize()
-        print("best_size =", best_size)
-        min_size = self.m_staticText1.GetMinSize()
-        print("min_size =", min_size)
-        size = self.m_staticText1.GetSize()
-        print("size =", size)
-        size = self.m_staticText1.GetBestHeight(size[0])
-        print("size =", size)
-        GetMaxSize = self.m_staticText1.GetMaxSize()
-        print("GetMaxSize =", GetMaxSize)
-        GetMaxClientSize = self.m_staticText1.GetMaxClientSize()
-        print("GetMaxClientSize =", GetMaxSize)
-        self.panel_description.Fit()
-        event.Skip()
-
     def event_close(self, event):
         store_configuration(self.get_configuration())
         event.Skip()
@@ -490,7 +441,6 @@ def run():
         print("Error loading INI file")
         window.apply_configuration(default_configuration)
         print("Default INI file restored")
-    # window.SetMinSize(window.GetBestSize())
     window.Show()
     app.MainLoop()
 
