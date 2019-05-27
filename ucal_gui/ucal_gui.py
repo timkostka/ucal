@@ -171,7 +171,7 @@ class CalculatorWindow(BaseCalculatorWindow):
         if self.checkbox_save_history.GetValue():
             count = int(config.get("History", "Entries"))
             for i in range(1, count + 1):
-                print('Adding history %d' % i)
+                print("Adding history %d" % i)
                 input_text = config.get("History", "Input%d" % i)
                 result = config.get("History", "Result%d" % i)
                 self.add_history(input_text, result, False)
@@ -218,7 +218,7 @@ class CalculatorWindow(BaseCalculatorWindow):
             config.set("History", "Entries", str(len(history)))
             for i, (input_text, result_text) in enumerate(history, 1):
                 config.set("History", "Input%d" % i, input_text)
-                config.set("History", "Result%d" % i, input_text)
+                config.set("History", "Result%d" % i, result_text)
         return config
 
     # Virtual event handlers, overide them in your derived class
@@ -308,7 +308,7 @@ class CalculatorWindow(BaseCalculatorWindow):
 
     def event_text_ctrl_input_on_text_enter(self, event):
         text = self.text_ctrl_input.GetValue()
-        if text == 'exit':
+        if text == "exit":
             self.Close()
             return
         self.calculate_input()
@@ -352,7 +352,9 @@ class CalculatorWindow(BaseCalculatorWindow):
     def event_menu_file_clear_selected(self, _event):
         self.clear_history()
 
-    def add_history(self, input_text="Input", result_text="Result", refit=True):
+    def add_history(
+        self, input_text="Input", result_text="Result", refit=True
+    ):
         """Add an input and output to the window."""
         global history_index
         global history
