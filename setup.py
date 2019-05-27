@@ -13,7 +13,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/timkostka/ucal",
     packages=setuptools.find_packages(),
-    package_data={'ucal_gui': ['*.ico']},
+    package_data={'ucal_gui': ['*.ico', 'BaseCalculatorWindow.py']},
     install_requires=['pyperclip', 'wxPython'],
     classifiers=[
         "Programming Language :: Python :: 3",
