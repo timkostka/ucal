@@ -14,7 +14,7 @@ setuptools.setup(
     url="https://github.com/timkostka/ucal",
     packages=setuptools.find_packages(),
     package_data={'ucal_gui': ['*.ico']},
-    install_requires=['pyperclip', 'PySimpleGUI'],
+    install_requires=['pyperclip', 'wxPython'],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
