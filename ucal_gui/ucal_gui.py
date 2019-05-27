@@ -1,5 +1,5 @@
 """
-This is a class derived from CalculatorWindowBase.
+ucal_gui provides a GUI interface to ucal.
 
 """
 
@@ -15,7 +15,8 @@ import wx
 
 import ucal
 
-from ucal_gui.BaseCalculatorWindow import BaseCalculatorWindow
+# from ucal_gui.BaseCalculatorWindow import BaseCalculatorWindow
+from BaseCalculatorWindow import BaseCalculatorWindow
 
 
 #######################
@@ -53,7 +54,7 @@ default_configuration["Settings"] = {
 
 # INI file location
 ini_file_path = os.path.join(
-    os.path.join(os.environ["LOCALAPPDATA"], "uCal"), "ucal.ini"
+    os.path.join(os.environ["LOCALAPPDATA"], "ucal"), "ucal.ini"
 )
 
 
@@ -61,9 +62,7 @@ def read_configuration():
     """Attempt to read the INI configuration file."""
     if not os.path.isfile(ini_file_path):
         print("INI file not found")
-        print("Configuration file not found")
         return default_configuration
-    print("Reading INI file")
     config = configparser.ConfigParser()
     config.read(ini_file_path)
     return config
@@ -71,7 +70,6 @@ def read_configuration():
 
 def store_configuration(config):
     """Store the configuration to an INI file."""
-    print("Writing INI file")
     # create path if it doesn't exist
     try:
         os.makedirs(os.path.dirname(ini_file_path), exist_ok=True)
@@ -88,7 +86,6 @@ def find_file(filename):
     for this_dir in directories:
         path = os.path.join(os.path.abspath(this_dir), filename)
         if os.path.isfile(path):
-            print("Found file: %s" % path)
             return path
     print("Unable to find file %s" % filename)
     return None
@@ -153,7 +150,6 @@ class CalculatorWindow(BaseCalculatorWindow):
         if self.checkbox_remember_window_position.GetValue():
             # set size
             target_size = config.get("Settings", "WindowSize").lower()
-            print("WindowSize=%s" % target_size)
             if "x" in target_size:
                 size = target_size.split("x")
                 if len(size) == 2 and all(x.isdigit() for x in size):
@@ -163,13 +159,11 @@ class CalculatorWindow(BaseCalculatorWindow):
             position = config.get("Settings", "WindowPosition").split(",")
             if len(position) == 2 and all(x.isdigit() for x in position):
                 position = [int(x) for x in position]
-                print("WindowPosition=%s" % position)
                 self.SetPosition(position)
         # load history if requested
         if self.checkbox_save_history.GetValue():
             count = int(config.get("History", "Entries"))
             for i in range(1, count + 1):
-                print("Adding history %d" % i)
                 input_text = config.get("History", "Input%d" % i)
                 result = config.get("History", "Result%d" % i)
                 self.add_history(input_text, result, False)
@@ -226,10 +220,8 @@ class CalculatorWindow(BaseCalculatorWindow):
     def event_text_ctrl_on_char(self, event):
         # handle up/down events on
         key = event.GetKeyCode()
-        print("key %s pressed" % key)
         global history
         global history_index
-        print("history_index =", history_index)
         if key == 315:
             # up key pressed
             if history:
@@ -394,16 +386,9 @@ class CalculatorWindow(BaseCalculatorWindow):
         store_configuration(self.get_configuration())
         event.Skip()
 
-    def event_key_down(self, event):
-        """If Alt was pressed, show the menubar."""
-        code = event.GetKeyCode()
-        print("Key %s was pressed." % code)
-        event.Skip()
-
-    def event_window_set_focus(self, event):
-        print("Setting focus!")
-        event.Skip()
+    def event_on_show(self, event):
         self.text_ctrl_input.SetFocus()
+        event.Skip()
 
 
 def set_dpi_aware():

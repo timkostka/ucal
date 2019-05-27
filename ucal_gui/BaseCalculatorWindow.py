@@ -372,7 +372,7 @@ class BaseCalculatorWindow(wx.Frame):
 
         # Connect Events
         self.Bind(wx.EVT_CLOSE, self.event_close)
-        self.Bind(wx.EVT_KEY_DOWN, self.event_key_down)
+        self.Bind(wx.EVT_SHOW, self.event_on_show)
         self.Bind(wx.EVT_SIZE, self.event_window_on_size)
         self.button_hide_description.Bind(
             wx.EVT_BUTTON, self.event_button_hide_description_click
@@ -411,7 +411,7 @@ class BaseCalculatorWindow(wx.Frame):
     def event_close(self, event):
         event.Skip()
 
-    def event_key_down(self, event):
+    def event_on_show(self, event):
         event.Skip()
 
     def event_window_on_size(self, event):

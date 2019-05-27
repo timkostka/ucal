@@ -55,7 +55,7 @@
             <property name="window_style">wxCLIP_CHILDREN|wxNO_FULL_REPAINT_ON_RESIZE|wxTAB_TRAVERSAL</property>
             <property name="xrc_skip_sizer">1</property>
             <event name="OnClose">event_close</event>
-            <event name="OnKeyDown">event_key_down</event>
+            <event name="OnShow">event_on_show</event>
             <event name="OnSize">event_window_on_size</event>
             <object class="wxBoxSizer" expanded="1">
                 <property name="minimum_size"></property>
