@@ -170,9 +170,12 @@ class CalculatorWindow(BaseCalculatorWindow):
         if self.checkbox_save_history.GetValue():
             count = int(config.get("History", "Entries"))
             for i in range(1, count + 1):
+                print('Adding history %d' % i)
                 input_text = config.get("History", "Input%d" % i)
                 result = config.get("History", "Result%d" % i)
-                self.add_history(input_text, result)
+                self.add_history(input_text, result, False)
+            self.Layout()
+            self.scroll_to_bottom()
 
     def get_configuration(self):
         """Return the current configuration."""
@@ -339,7 +342,7 @@ class CalculatorWindow(BaseCalculatorWindow):
     def event_menu_file_clear_selected(self, _event):
         self.clear_history()
 
-    def add_history(self, input_text="Input", result_text="Result"):
+    def add_history(self, input_text="Input", result_text="Result", refit=True):
         """Add an input and output to the window."""
         global history_index
         global history
@@ -393,9 +396,10 @@ class CalculatorWindow(BaseCalculatorWindow):
             result_element, 0, wx.BOTTOM | wx.RIGHT | wx.EXPAND, 10
         )
         # refit the window
-        self.Layout()
-        height = self.scrolled_window_history.GetVirtualSize()[1]
-        self.scrolled_window_history.Scroll(0, height)
+        if refit:
+            self.Layout()
+            height = self.scrolled_window_history.GetVirtualSize()[1]
+            self.scrolled_window_history.Scroll(0, height)
 
     # scroll to the bottom of the history window
     def scroll_to_bottom(self):
@@ -432,6 +436,11 @@ class CalculatorWindow(BaseCalculatorWindow):
         print("Key %s was prssed." % event.GetKeyCode())
         event.Skip()
 
+    def event_window_set_focus(self, event):
+        print("Setting focus!")
+        event.Skip()
+        self.text_ctrl_input.SetFocus()
+
 
 def set_dpi_aware():
     """Make the application DPI aware."""
@@ -459,9 +468,6 @@ def run():
     # set calculator window as top level window
     app.SetTopWindow(window)
     # hide the buttons
-    #window.panel_buttons.Hide()
-    #window.Layout()
-    #window.Refresh()
     window.clear_history()
     # apply configuration settings
     try:
