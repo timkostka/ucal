@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="ucal",
-    version="1.3.3",
+    version="1.3.4",
     author="Tim Kostka",
     author_email="kostka@gmail.com",
     description='A calculator with automatic unit conversions',
