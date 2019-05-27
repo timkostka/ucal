@@ -1,5 +1,6 @@
 """Build a new PyPI release and upload it."""
 
+import sys
 import os
 import re
 import glob
@@ -41,9 +42,11 @@ if commit_after_uploading and not force_clean_git_diff:
     print('ERROR: invalid options')
     print('if commit_after_uploading is True, force_clean_git_diff must be '
           'True')
+    sys.exit(1)
 if not increment_build_number:
     print('ERROR: invalid options')
     print('increment_build_number must be True')
+    sys.exit(1)
 
 
 def get_package_directory():
