@@ -426,6 +426,9 @@ def run():
         window.apply_configuration(default_configuration)
         print("Default INI file restored")
     window.Show()
+    # bring to front
+    window.Raise()
+    # start main loop
     app.MainLoop()
 
 
