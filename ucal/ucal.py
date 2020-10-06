@@ -189,11 +189,35 @@ class Quantity:
         return Quantity(value=new_value,
                         units=[0.0] * unit_count)
 
-    # function are given with the prefix "function_"
+    # functions are given with the prefix "function_"
     # for example, "sqrt(value)" would call "value.function_sqrt()"
     def function_sqrt(self):
         return Quantity(value=self.value.sqrt(),
                         units=[x / 2.0 for x in self.units])
+
+    def function_sin(self):
+        if not self.is_unitless():
+            raise QuantityError('Inconsistent units',
+                                'Exponent values must be unitless.',
+                                self)
+        return Quantity(value=math.sin(self.value),
+                        units=self.units)
+
+    def function_cos(self):
+        if not self.is_unitless():
+            raise QuantityError('Inconsistent units',
+                                'Exponent values must be unitless.',
+                                self)
+        return Quantity(value=math.cos(self.value),
+                        units=self.units)
+
+    def function_tan(self):
+        if not self.is_unitless():
+            raise QuantityError('Inconsistent units',
+                                'Exponent values must be unitless.',
+                                self)
+        return Quantity(value=math.tan(self.value),
+                        units=self.units)
 
     def function_exp(self):
         if not self.is_unitless():

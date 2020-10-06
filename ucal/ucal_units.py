@@ -23,6 +23,7 @@ units['miles'] = 'mi'
 
 # area
 units['acre'] = '1 / 640 * mi^2'
+units['sqft'] = '1 ft^2'
 
 # speed
 units['mph'] = 'mile/hour'
@@ -137,17 +138,26 @@ units['GHz'] = '1e9 Hz'
 
 # time
 units['sec'] = 's'
+units['seconds'] = 's'
 units['ms'] = '1e-3 s'
 units['us'] = '1e-6 s'
 units['ns'] = '1e-9 s'
 units['ps'] = '1e-12 s'
 units['min'] = '60 s'
-units['hr'] = 'hour'
-units['hour'] = '60 min'
+units['mins'] = 'min'
+units['minutes'] = 'min'
+units['hr'] = '60 min'
+units['hrs'] = 'hr'
+units['hour'] = 'hr'
+units['hours'] = 'hr'
 units['day'] = '24 hour'
+units['days'] = 'day'
 units['week'] = '7 day'
+units['weeks'] = 'week'
 units['year'] = '365.2425 day'
+units['years'] = 'year'
 units['month'] = '(1 year) / 12'
+units['months'] = 'month'
 
 # data
 units['bytes'] = 'byte'

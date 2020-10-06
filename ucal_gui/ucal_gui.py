@@ -48,7 +48,7 @@ default_configuration["Settings"] = {
     "ViewOptions": "no",
     "SaveHistory": "yes",
     "RememberWindowSettings": "yes",
-    "MaxHistoryEntries": "1000",
+    "MaxHistoryEntries": "20",
 }
 
 # INI file location

@@ -31,7 +31,7 @@ force_clean_git_diff = True
 commit_after_uploading = True
 
 # if True, will upload package to PyPI after building
-upload_new_package = True
+upload_new_package = False
 
 ##################
 # END OF OPTIONS #
