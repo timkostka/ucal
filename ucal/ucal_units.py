@@ -65,6 +65,14 @@ units['GJ'] = '1e9 J'
 units['Btu'] = '1055.06 J'
 units['btu'] = 'Btu'
 units['BTU'] = 'Btu'
+units['kWh'] = 'kW * hr'
+units['kWhr'] = 'kWh'
+
+# current over time
+units['mAh'] = 'mA*hr'
+units['mAhr'] = 'mAh'
+units['Ah'] = 'A*hr'
+units['Ahr'] = 'Ah'
 
 # power
 units['W'] = '1 J / s'
@@ -156,6 +164,7 @@ units['week'] = '7 day'
 units['weeks'] = 'week'
 units['year'] = '365.2425 day'
 units['years'] = 'year'
+units['yr'] = 'year'
 units['month'] = '(1 year) / 12'
 units['months'] = 'month'
 
@@ -183,6 +192,14 @@ units['kBps'] = 'kB / s'
 units['MBps'] = 'MB / s'
 units['GBps'] = 'GB / s'
 units['TBps'] = 'TB / s'
+
+# angular units
+units['deg'] = 'pi / 180'
+units['degree'] = 'deg'
+units['degrees'] = 'deg'
+units['rad'] = '1'
+units['radian'] = 'rad'
+units['radians'] = 'rad'
 
 # constants
 units['c'] = '299792458 m/s'

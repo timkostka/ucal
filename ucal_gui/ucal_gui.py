@@ -17,7 +17,6 @@ import ucal
 
 from ucal_gui.BaseCalculatorWindow import BaseCalculatorWindow
 
-
 #######################
 # START OF OF OPTIONS #
 #######################
@@ -40,7 +39,6 @@ history_index = None
 ##################
 # END OF OPTIONS #
 ##################
-
 
 # default INI file options
 default_configuration = configparser.ConfigParser()
@@ -382,11 +380,28 @@ class CalculatorWindow(BaseCalculatorWindow):
         self.scrolled_window_history.Scroll(0, height)
 
     def event_close(self, event):
+        print("Close")
         store_configuration(self.get_configuration())
         event.Skip()
 
-    def event_on_show(self, event):
+    def event_show(self, event):
+        print("Show")
+        # self.text_ctrl_input.SetFocus()
+        event.Skip()
+
+    def event_iconize(self, event):
+        print("Iconize")
+        # self.text_ctrl_input.SetFocus()
+        event.Skip()
+
+    def event_activate(self, event):
+        print("Activate")
         self.text_ctrl_input.SetFocus()
+        event.Skip()
+
+    def event_activate_app(self, event):
+        print("ActivateApp")
+        # self.text_ctrl_input.SetFocus()
         event.Skip()
 
 
